@@ -66,4 +66,7 @@ Triple S is a scouting support system designed to connect young, raw talent with
   npm run build
   ```
 
-
+Link of the Video Recording
+```
+https://drive.google.com/file/d/1cbnf174e1LeRdVAEvI5Bzxt1ST80GSeH/view?usp=sharing
+```
