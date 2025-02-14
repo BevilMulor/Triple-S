@@ -1,50 +1,30 @@
-# React + TypeScript + Vite
+# Triple S
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 🚀 Frontend Overview
+Triple S is a scouting support system designed to connect young, raw talent with scouts and career opportunities globally. This repository contains the frontend of the Triple S platform, built using modern web technologies.
 
-Currently, two official plugins are available:
+## 🛠️ Technologies Used
+- **Vite** - Fast build tool for modern web applications.
+- **React** - JavaScript library for building user interfaces.
+- **TypeScript** - Strongly typed JavaScript for better development.
+- **Tailwind CSS** - Utility-first CSS framework for styling.
+- **React Router** - Declarative routing for React applications.
+- **Axios** - Promise-based HTTP client for API requests.
+- **Lucide-React** - Icon library for a modern UI.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 📂 Project Structure
 
-## Expanding the ESLint configuration
+frontend/ │── src/ │ ├── components/ # Reusable UI components │ ├── pages/ # Application pages │ ├── context/ # Context providers (e.g., AuthContext) │ ├── hooks/ # Custom React hooks │ ├── assets/ # Images, fonts, and static files │ ├── styles/ # Global and component-specific styles │ ├── App.tsx # Main application component │ ├── main.tsx # Entry point for React app │── public/ # Static assets │── index.html # HTML entry file │── vite.config.ts # Vite configuration │── tsconfig.json # TypeScript configuration │── package.json # Project dependencies and scripts │── README.md # Project documentation
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
 
-- Configure the top-level `parserOptions` property like this:
+## 📦 Installation & Setup
+1. **Clone the repository**  
+   ```sh
+   git clone https://github.com/your-username/triple-s-frontend.git
+   cd triple-s-frontend
+    ```
+2. **Install dependencies
+    ```
+    npm install
+    ```
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
