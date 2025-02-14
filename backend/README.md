@@ -92,8 +92,6 @@ You can deploy the backend using platforms like:
 
 * Heroku
 * AWS
-* DigitalOcean
-* Railway.app
 * Vercel (for serverless functions)
 * Ensure the .env file is properly configured in the production environment.
 
