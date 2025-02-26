@@ -130,6 +130,7 @@ const CoachDashboard = () => {
                         <option value="Striker">Striker</option>
                         <option value="Goalkeeper">Goalkeeper</option>
                         <option value="Midfield">Midfield</option>
+                        <option value="Defense">Defense</option>
                       </>
                     )}
                     {coachDiscipline === 'Basketball' && (
@@ -155,9 +156,9 @@ const CoachDashboard = () => {
                     onChange={handleFilterChange}
                   >
                     <option value="All Ages">All Ages</option>
-                    <option value="18-20">18-20</option>
-                    <option value="21-25">21-25</option>
-                    <option value="26+">26+</option>
+                    <option value="8-11">8-11</option>
+                    <option value="12-14">12-14</option>
+                    <option value="15-17">15-17</option>
                   </select>
                 </div>
                 <div className="col-md-4 mb-3">

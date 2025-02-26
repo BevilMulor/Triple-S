@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from 'react'; 
 import { Bell, MessageCircle } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -9,8 +9,13 @@ const positionsByDiscipline = {
 };
 
 const ScoutDashboard = () => {
-  const [selectedPosition, setSelectedPosition] = useState('All Positions');
+  const [] = useState('All Positions');
   const [requirements, setRequirements] = useState('');
+  const [filters, setFilters] = useState({
+    position: 'All Positions',
+    ageRange: 'All Ages',
+    experienceLevel: 'All Levels'
+  });
   
   // Mock user data
   const scoutDiscipline = 'Football';
@@ -46,6 +51,15 @@ const ScoutDashboard = () => {
     }
   ];
 
+  // Handle filter change
+  const handleFilterChange = (e: { target: { name: any; value: any; }; }) => {
+    const { name, value } = e.target;
+    setFilters({
+      ...filters,
+      [name]: value
+    });
+  };
+
   return (
     <div className="container-fluid py-4 px-4 bg-light">
       {/* Navbar */}
@@ -66,22 +80,57 @@ const ScoutDashboard = () => {
         </div>
       </div>
 
-      {/* Find Talents Section */}
-      <div className="mb-4">
-        <h2 className="h5 mb-3">Find Talents</h2>
-        <div className="row">
-          <div className="col-md-4">
-            <label className="form-label text-secondary">Position</label>
-            <select 
-              className="form-select form-select-lg"
-              value={selectedPosition}
-              onChange={(e) => setSelectedPosition(e.target.value)}
-            >
-              <option value="All Positions">All Positions</option>
-              {positionsByDiscipline[scoutDiscipline]?.map((position) => (
-                <option key={position} value={position}>{position}</option>
-              ))}
-            </select>
+    {/* Filters */}
+    <div className="row mb-4">
+        <div className="col-12">
+          <div className="card shadow-sm">
+            <div className="card-body">
+              <h5 className="card-title mb-3">Find Talents</h5>
+              <div className="row">
+                <div className="col-md-4 mb-3">
+                  <label className="form-label">Position</label>
+                  <select 
+                    className="form-select" 
+                    name="position"
+                    value={filters.position} 
+                    onChange={handleFilterChange}
+                  >
+                    <option value="All Positions">All Positions</option>
+                    {positionsByDiscipline[scoutDiscipline]?.map((position) => (
+                      <option key={position} value={position}>{position}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="col-md-4 mb-3">
+                  <label className="form-label">Age Range</label>
+                  <select 
+                    className="form-select" 
+                    name="ageRange"
+                    value={filters.ageRange} 
+                    onChange={handleFilterChange}
+                  >
+                    <option value="All Ages">All Ages</option>
+                    <option value="8-11">8-11</option>
+                    <option value="12-14">12-14</option>
+                    <option value="15-17">15-17</option>
+                  </select>
+                </div>
+                <div className="col-md-4 mb-3">
+                  <label className="form-label">Experience Level</label>
+                  <select 
+                    className="form-select" 
+                    name="experienceLevel"
+                    value={filters.experienceLevel} 
+                    onChange={handleFilterChange}
+                  >
+                    <option value="All Levels">All Levels</option>
+                    <option value="Beginner">Beginner</option>
+                    <option value="Intermediate">Intermediate</option>
+                    <option value="Advanced">Advanced</option>
+                  </select>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
