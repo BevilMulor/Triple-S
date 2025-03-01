@@ -309,7 +309,7 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
                 Coaches will rate your overall performance as well as specific skills based on your discipline.</p>
               </div>
               
-              {/* Example of how ratings will look (visible but disabled) */}
+
               <div className="mb-3">
                 <label className="form-label">Overall Rating (Coach Assessed)</label>
                 <div>

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { MessageCircle, Bell } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const CoachDashboard = () => {
   // State for the coach's discipline (pulled from auth/profile)
@@ -40,6 +41,18 @@ const CoachDashboard = () => {
     
     setTalents(mockTalentData[coachDiscipline as keyof typeof mockTalentData] || []);
   }, [coachDiscipline]);
+
+  // Function to navigate to talent profile
+  // const navigateToProfile = (talentId: number) => {
+  //   router.push({
+  //     pathname: '/talent-profile',
+  //     query: { 
+  //       id: talentId,
+  //       viewMode: 'coach',
+  //       discipline: coachDiscipline
+  //     }
+  //   });
+  // };
 
   // Handle rating change
   const handleRatingChange = (field: string, value: string) => {
@@ -220,7 +233,9 @@ const CoachDashboard = () => {
                   </div>
                 </div>
                 <div className="d-flex justify-content-between">
-                  <button className="btn btn-primary w-100 me-1">View Profile</button>
+                  <Link to={`/talent-profile`} className="btn btn-primary w-100 me-1">
+                    View Profile
+                  </Link>
                   <button className="btn btn-outline-secondary" style={{ width: '40px' }}>
                     <MessageCircle size={16} />
                   </button>

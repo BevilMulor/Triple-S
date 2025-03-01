@@ -11,6 +11,8 @@ import Success from './pages/Success';
 import Help from './pages/Help';
 import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
+import TalentProfile from './pages/TalentProfile';
+
 
 
 const App = () => {
@@ -29,6 +31,8 @@ const App = () => {
         <Route path="/help" element={<Help />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/privacy" element={<Privacy />} />
+        <Route path="/talent-profile" element={<TalentProfile />} />
+
       </Routes>
     </Router>
   );
