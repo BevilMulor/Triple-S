@@ -3,10 +3,10 @@ import { Link } from 'react-router-dom';
 
 export const Navbar: React.FC = () => {
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
+    <nav className="navbar navbar-expand-lg navbar-light bg-light" style={{ borderBottomLeftRadius: '20px', borderBottomRightRadius: '20px' }}>
       <div className="container">
         {/* Logo */}
-        <Link className="navbar-brand fw-bold text-primary" to="/">
+        <Link className="navbar-brand fw-bold text-dark" to="/">
           Triple S
         </Link>
 
@@ -23,28 +23,28 @@ export const Navbar: React.FC = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Navigation Links */}
-        <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav me-auto">
-            <li className="nav-item">
+        {/* Navigation Links - Centered */}
+        <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
+          <ul className="navbar-nav">
+            <li className="nav-item px-3">
               <Link className="nav-link" to="/">Home</Link>
             </li>
-            <li className="nav-item">
+            <li className="nav-item px-3">
               <Link className="nav-link" to="/talents">Talents</Link>
             </li>
-            <li className="nav-item">
+            <li className="nav-item px-3">
               <Link className="nav-link" to="/coaches">Coaches</Link>
             </li>
-            <li className="nav-item">
+            <li className="nav-item px-3">
               <Link className="nav-link" to="/scouts">Scouts</Link>
             </li>
           </ul>
+        </div>
 
-          {/* Auth Buttons */}
-          <div className="d-flex">
-            <Link to="/login" className="btn btn-outline-primary me-2">Login</Link>
-            <Link to="/signup" className="btn btn-primary">Sign Up</Link>
-          </div>
+        {/* Auth Buttons */}
+        <div className="d-flex">
+          <Link to="/login" className="btn btn-outline-primary me-2">Login</Link>
+          <Link to="/signup" className="btn btn-primary">Sign Up</Link>
         </div>
       </div>
     </nav>

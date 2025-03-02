@@ -13,7 +13,7 @@ export const Footer: React.FC = () => {
             </p>
           </div>
 
-          {/* Quick Links */}
+          
           <div className="col-6 col-md-2">
             <h6 className="text-white mb-3">Quick Links</h6>
             <ul className="list-unstyled mb-0">
@@ -23,7 +23,7 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Support */}
+          
           <div className="col-6 col-md-2">
             <h6 className="text-white mb-3">Support</h6>
             <ul className="list-unstyled mb-0">
@@ -33,7 +33,7 @@ export const Footer: React.FC = () => {
             </ul>
           </div>
 
-          {/* Follow Us */}
+          
           <div className="col-12 col-md-4">
             <h6 className="text-white mb-3">Follow Us</h6>
             <div className="d-flex gap-3">
@@ -61,7 +61,7 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* Copyright */}
+        
         <div className="border-top border-secondary mt-4 pt-4 text-center text-white-50">
           <small>© 2025 Triple S. All rights reserved.</small>
         </div>
