@@ -15,7 +15,9 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
     country: string;
     position: string;
     currentClub: string;
+    preferredFoot: string;
     experienceLevel: string;
+    mediaContent: string;
     mediaUrl: string;
     skills: { [key: string]: number };
   }>({
@@ -25,7 +27,9 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
     country: '',
     position: '',
     currentClub: '',
+    preferredFoot: '',
     experienceLevel: '',
+    mediaContent: '',
     mediaUrl: '',
     skills: {}
   });
@@ -39,6 +43,7 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
   };
 
   const experienceLevels = ['Beginner', 'Intermediate', 'Advanced'];
+  const preferredFootOptions = ['Left', 'Right', 'Both'];
 
   const countries = [
     { code: 'KE', name: 'Kenya', flag: '🇰🇪', dialCode: '+254' },
@@ -49,17 +54,6 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
     { code: 'SA', name: 'South Africa', flag: '🇿🇦', dialCode: '+27' },
   ];
 
-  const skillsTemplate: { [key: string]: { all: string[] } } = {
-    Football: {
-      all: ['Ball Distribution', 'Composure', 'Dribbling']
-    },
-    Basketball: {
-      all: ['Ball Handling', 'Court Vision', 'Shooting']
-    },
-    Art: {
-      all: ['Creativity', 'Technical Skill', 'Composition']
-    }
-  };
 
   const getCountryByCode = (code: string) => {
     return countries.find(country => country.code === code) || null;
@@ -73,7 +67,14 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
                          formData.position && 
                          formData.currentClub &&
                          formData.experienceLevel &&
-                         formData.mediaUrl;
+                         formData.mediaUrl &&
+                         formData.mediaContent;
+    
+    // Only require preferred foot for Football discipline
+    if (discipline === 'Football' && !formData.preferredFoot) {
+      return false;
+    }
+    
     return requiredFields;
   };
 
@@ -130,9 +131,9 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
         </div>
       </div>
 
-      {/* Complete Your Talent Profile Section - Narrower form */}
+      {/* Complete Your Talent Profile Section - Made narrower */}
       <div className="row mb-4 justify-content-center">
-        <div className="col-12 col-md-10 col-lg-8">
+        <div className="col-12 col-md-8 col-lg-6">
           <div className="card shadow-sm">
             <div className="card-body">
               <h3 className="mb-4 border-bottom pb-2">Complete Your Talent Profile</h3>
@@ -220,23 +221,7 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
                   </div>
                 </div>
 
-                {/* Media Upload */}
-                <div className="mb-4">
-                  <div className="border border-2 border-dashed rounded-3 p-5 text-center bg-light">
-                    <input
-                      type="file"
-                      className="d-none"
-                      id="mediaUpload"
-                      onChange={handleFileChange}
-                    />
-                    <label htmlFor="mediaUpload" className="btn btn-primary">
-                      Choose Files
-                    </label>
-                    {formData.mediaUrl && <p className="mt-2">{formData.mediaUrl}</p>}
-                  </div>
-                </div>
-
-                {/* Position, Current Club and Experience Level */}
+                {/* Position and Experience Level */}
                 <div className="row mb-4">
                   <div className="col-md-6">
                     <label className="form-label">Position</label>
@@ -268,7 +253,7 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
                   </div>
                 </div>
 
-                {/* Added Current Club Row */}
+                {/* Current Club and Preferred Foot */}
                 <div className="row mb-4">
                   <div className="col-md-6">
                     <label className="form-label">Current Club</label>
@@ -282,7 +267,45 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
                     />
                   </div>
                   <div className="col-md-6">
-                    {/* This column intentionally left empty to match the requested layout */}
+                    <label className="form-label">Preferred Foot</label>
+                    <select
+                      className="form-select"
+                      value={formData.preferredFoot}
+                      onChange={(e) => setFormData(prev => ({ ...prev, preferredFoot: e.target.value }))}
+                      required={discipline === 'Football'}
+                      disabled={discipline !== 'Football'}
+                    >
+                      <option value="">Select Preferred Foot</option>
+                      {preferredFootOptions.map((option) => (
+                        <option key={option} value={option}>{option}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Media Subject and Upload */}
+                <div className="mb-4">
+                  <label className="form-label">Media Content</label>
+                  <input
+                    type="text"
+                    className="form-control mb-3"
+                    value={formData.mediaContent}
+                    onChange={(e) => setFormData(prev => ({ ...prev, mediaSubject: e.target.value }))}
+                    placeholder="Enter content for your media"
+                    required
+                  />
+                  
+                  <div className="border border-2 border-dashed rounded-3 p-5 text-center bg-light">
+                    <input
+                      type="file"
+                      className="d-none"
+                      id="mediaUpload"
+                      onChange={handleFileChange}
+                    />
+                    <label htmlFor="mediaUpload" className="btn btn-primary">
+                      Choose Files
+                    </label>
+                    {formData.mediaUrl && <p className="mt-2">{formData.mediaUrl}</p>}
                   </div>
                 </div>
 
@@ -293,60 +316,6 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
                   Submit Profile
                 </button>
               </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* View-only display of the Coach Rating Card (pulled from Coach Dashboard) - Also narrower */}
-      <div className="row mb-4 justify-content-center">
-        <div className="col-12 col-md-10 col-lg-8">
-          <div className="card shadow-sm">
-            <div className="card-body">
-              <h5 className="card-title mb-3">Coach Ratings (View Only)</h5>
-              <div className="alert alert-secondary">
-                <p className="mb-0">Your profile ratings will appear here after coaches have evaluated your performance. 
-                Coaches will rate your overall performance as well as specific skills based on your discipline.</p>
-              </div>
-              
-
-              <div className="mb-3">
-                <label className="form-label">Overall Rating (Coach Assessed)</label>
-                <div>
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <span 
-                      key={star} 
-                      style={{ fontSize: '24px', color: star <= 3 ? '#ffc107' : '#e4e5e9', opacity: 0.7 }}
-                    >
-                      ★
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div className="row">
-                {skillsTemplate[discipline]?.all.map((skill) => (
-                  <div className="col-md-4 mb-3" key={skill}>
-                    <label className="form-label">{skill} (Coach Assessed)</label>
-                    <input
-                      type="number"
-                      className="form-control"
-                      placeholder="Awaiting coach evaluation"
-                      disabled
-                    />
-                  </div>
-                ))}
-              </div>
-
-              <div className="mb-3">
-                <label className="form-label">Coach Comments</label>
-                <textarea
-                  className="form-control"
-                  rows={4}
-                  placeholder="Coach feedback will appear here after evaluation"
-                  disabled
-                ></textarea>
-              </div>
             </div>
           </div>
         </div>
