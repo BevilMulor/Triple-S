@@ -1,7 +1,7 @@
 // src/components/RealPrivateRoute.tsx
 import React, { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from './realAuthContext';
+import { useAuth } from '../auth/realAuthContext';
 
 interface RealPrivateRouteProps {
   children: React.ReactNode;
