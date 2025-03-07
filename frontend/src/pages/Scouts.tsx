@@ -1,6 +1,8 @@
-import { useState } from 'react'; 
-import { Bell, MessageCircle } from 'lucide-react';
+import { useState, useEffect } from 'react'; 
+import { Bell } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Navbar } from '../components/common/Navbar';
+import { useAuth } from '../auth/realAuthContext';
 
 const positionsByDiscipline = {
   Football: ['Goalkeeper', 'Defense', 'Midfield', 'Striker'],
@@ -9,6 +11,7 @@ const positionsByDiscipline = {
 };
 
 const ScoutDashboard = () => {
+  const { user }= useAuth();
   const [] = useState('All Positions');
   const [requirements, setRequirements] = useState('');
   const [filters, setFilters] = useState({
@@ -16,40 +19,59 @@ const ScoutDashboard = () => {
     ageRange: 'All Ages',
     experienceLevel: 'All Levels'
   });
+
+  const [talents, setTalents] = useState<{
+    _id: string;
+    email: string;
+    discipline: string;
+    dashboard: {
+      _id: string;
+      name: string;
+      phoneNumber: string;
+      dateOfBirth: string;
+      country: string;
+      position: string;
+      experience: string;
+      currentClub: string;
+      preferredFoot: string;
+      mediaContent: {
+        fileType: string;
+        fileUrl: string;
+        _id: string;
+      }[];
+    }[];
+    review: any[];
+    createdAt: string;
+    __v: number;
+  }[]>([]);
+
+  // Fetch talents when the component mounts
+  useEffect(() => {
+    const fetchTalents = async () => {
+      try {
+        // Make the GET request to fetch talents from the backend
+        const response = await fetch('http://localhost:3000/talent/getTalents');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch talents');
+        }
+
+        const data = await response.json();
+        setTalents(data); // Store fetched data in the talents state
+      } catch (error) {
+        console.error(error);
+        // Optionally, handle errors (e.g., show a message to the user)
+      }
+    };
+
+    fetchTalents();
+  }, []); // Empty dependency array ensures this runs only once after the component mounts
+
   
   // Mock user data
   const scoutDiscipline = 'Football';
   
-  // Mock talent data
-  const talents = [
-    {
-      id: 1,
-      name: 'John Smith',
-      position: 'Striker',
-      location: 'London, UK',
-      experience: '3 years experience',
-      age: 19,
-      imageUrl: '/api/placeholder/400/250'
-    },
-    {
-      id: 2,
-      name: 'David Wilson',
-      position: 'Goalkeeper',
-      location: 'Manchester, UK',
-      experience: '5 years experience',
-      age: 21,
-      imageUrl: '/api/placeholder/400/250'
-    },
-    {
-      id: 3,
-      name: 'Sarah Johnson',
-      position: 'Midfield',
-      location: 'Liverpool, UK',
-      experience: '4 years experience',
-      age: 20,
-      imageUrl: '/api/placeholder/400/250'
-    }
-  ];
+  
 
   // Handle filter change
   const handleFilterChange = (e: { target: { name: any; value: any; }; }) => {
@@ -60,7 +82,65 @@ const ScoutDashboard = () => {
     });
   };
 
+  // Handle post requirement form submission
+  const handleSubmitRequirements = async () => {
+    const position = filters.position;
+    try{
+
+    // Retrieve the token from localStorage (or another storage method)
+    const token = localStorage.getItem('authToken');
+      
+    if (!token) {
+      alert('You must be logged in to submit a requirement.');
+      return;
+    }
+
+    // Assuming the coachId is stored in the token or auth context
+    if (!user) {
+      alert('User is not authenticated.');
+      return;
+    }
+    const scoutId = user._id;  // Replace with actual coachId from your user context
+  
+      // Make sure position and requirements are filled
+    if (!position || !requirements) {
+      alert("Please select a position and provide additional requirements.");
+      return;
+    }
+    
+    // Send the data to the backend API
+    const response = await fetch('http://localhost:3000/scout/submitRequirements', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        scoutId,
+        position,
+        requirements
+      })
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      alert('Requirement posted successfully!');
+      console.log(data);
+    } else {
+      alert('Error posting requirement.');
+      console.error(data);
+    }
+    }catch (error) {
+      console.error('Error submitting Requirements:', error);
+      alert('There was an error submitting talent requirements.');
+    }
+    
+  };
+
+
   return (
+    <>
+    <Navbar></Navbar>
     <div className="container-fluid py-4 px-4 bg-light">
       {/* Navbar */}
       <div className="row mb-4">
@@ -136,86 +216,100 @@ const ScoutDashboard = () => {
       </div>
 
       {/* Talents Grid */}
-      <div className="row g-4 mb-5">
-        {talents.map((talent) => (
-          <div key={talent.id} className="col-md-4">
-            <div className="card border-0 shadow-sm h-100 hover-effect">
-              <div className="position-relative">
-                <img
-                  src={talent.imageUrl}
-                  className="card-img-top"
-                  alt={talent.name}
-                  style={{ height: '200px', objectFit: 'cover' }}
-                />
-                <span className="position-absolute top-0 end-0 m-2 badge bg-success">
-                  Available
-                </span>
-              </div>
-              <div className="card-body">
-                <div className="d-flex justify-content-between align-items-start mb-3">
-                  <h5 className="card-title mb-0">{talent.name}</h5>
-                  <span className="badge bg-primary rounded-pill px-3">{talent.position}</span>
-                </div>
-                <div className="mb-3">
-                  <p className="text-muted mb-2">
-                    <i className="bi bi-geo-alt-fill me-2"></i>
-                    {talent.location}
-                  </p>
-                  <p className="text-muted mb-2">
-                    <i className="bi bi-person-fill me-2"></i>
-                    Age: {talent.age}
-                  </p>
-                  <p className="text-muted mb-0">
-                    <i className="bi bi-briefcase-fill me-2"></i>
-                    {talent.experience}
-                  </p>
-                </div>
-                <div className="d-flex gap-2">
-                  <button className="btn btn-primary flex-grow-1">
-                    View Profile
-                  </button>
-                  <button className="btn btn-outline-primary px-3">
-                    <MessageCircle size={16} />
-                  </button>
-                </div>
-              </div>
+      <div className="row mb-4">
+  {talents.map(talent => (
+    <div className="col-md-4 mb-3" key={talent._id}>
+      <div className="card shadow-sm h-100">
+        <div className="position-relative">
+          {/* Use the first media content or a placeholder if empty */}
+          <img 
+            src={talent.dashboard[0]?.mediaContent[0]?.fileUrl || '/api/placeholder/image.jpg'} 
+            className="card-img-top" 
+            alt={talent.dashboard[0]?.name} 
+          />
+          <span className="position-absolute top-0 end-0 m-2 badge bg-success">Available</span>
+          <div className="position-absolute top-0 start-0 m-2">
+            <span className="badge bg-primary">{talent.dashboard[0]?.position}</span>
+          </div>
+        </div>
+        <div className="card-body">
+          <h5 className="card-title">{talent.dashboard[0]?.name}</h5>
+          <div className="d-flex mb-2">
+            <div className="me-3">
+              <small className="text-muted">
+                <i className="bi bi-geo-alt me-1"></i>
+                {talent.dashboard[0]?.country || 'Unknown'}
+              </small>
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* Post Requirement Section */}
-      <div>
-        <h2 className="h5 mb-3">Post Talent Requirement</h2>
-        <div className="card border-0 shadow-sm">
-          <div className="card-body">
-            <div className="mb-3">
-              <label className="form-label text-secondary">Position Required</label>
-              <select className="form-select">
-                <option value="">Select Position</option>
-                {positionsByDiscipline[scoutDiscipline]?.map((position) => (
-                  <option key={position} value={position}>{position}</option>
-                ))}
-              </select>
+          <div className="d-flex mb-2">
+            <div className="me-3">
+              <small className="text-muted">
+                <i className="bi bi-calendar me-1"></i>
+                Age: {talent.dashboard[0]?.dateOfBirth ? new Date().getFullYear() - new Date(talent.dashboard[0]?.dateOfBirth).getFullYear() : 'N/A'}
+              </small>
             </div>
-            <div className="mb-3">
-              <label className="form-label text-secondary">Additional Requirements</label>
-              <textarea
-                className="form-control"
-                rows={4}
-                placeholder="Describe your requirements..."
-                value={requirements}
-                onChange={(e) => setRequirements(e.target.value)}
-              ></textarea>
+          </div>
+          <div className="d-flex mb-3">
+            <div>
+              <small className="text-muted">
+                <i className="bi bi-trophy me-1"></i>
+                {talent.dashboard[0]?.experience || 'Experience not provided'}
+              </small>
             </div>
-            <button className="btn btn-primary px-4">
-              Post Requirement
-            </button>
+          </div>
+          <div className="d-flex justify-content-between">
+            {/* <Link to={`/talent-profile/${talent._id}`} className="btn btn-primary w-100 me-1">
+              View Profile
+            </Link>
+            <button className="btn btn-outline-secondary" style={{ width: '40px' }}>
+              <MessageCircle size={16} />
+            </button> */}
           </div>
         </div>
       </div>
     </div>
+  ))}
+</div>
+
+   {/* Post Requirement Section */}
+   <div>
+          <h2 className="h5 mb-3">Post Talent Requirement</h2>
+          <div className="card border-0 shadow-sm">
+            <div className="card-body">
+              <div className="mb-3">
+                <label className="form-label text-secondary">Position Required</label>
+                <select 
+                  className="form-select"
+                  value={filters.position} 
+                  onChange={handleFilterChange} 
+                  name="position"
+                >
+                  <option value="All Positions">Select Position</option>
+                  {positionsByDiscipline[scoutDiscipline]?.map((position) => (
+                    <option key={position} value={position}>{position}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="mb-3">
+                <label className="form-label text-secondary">Additional Requirements</label>
+                <textarea
+                  className="form-control"
+                  rows={4}
+                  placeholder="Describe your requirements..."
+                  value={requirements}
+                  onChange={(e) => setRequirements(e.target.value)}
+                ></textarea>
+              </div>
+              <button className="btn btn-primary px-4" onClick={handleSubmitRequirements}>
+                Post Requirement
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
   );
-};
+};    
 
 export default ScoutDashboard;

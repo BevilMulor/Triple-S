@@ -1,6 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Bell, Calendar } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { Navbar } from '../components/common/Navbar';
+import { useNavigate } from 'react-router-dom'; // For redirection
+import { useAuth } from '../auth/realAuthContext'; //for accessing possible logged in user
 
 interface TalentsProps {
   userEmail: string;
@@ -8,29 +11,71 @@ interface TalentsProps {
 }
 
 const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
+
+  const { user } = useAuth();  // Example: useAuth() from a context provider
+  console.log('user:', user);
+  const userEmail = user?.email; // Extract email safely
+  console.log('userEmail: ', userEmail);
+
+  // Fetch profile if present
+  useEffect(() => {
+    const token = localStorage.getItem('authToken'); // Retrieve the token
+    if (!token) return;
+
+    fetch('http://localhost:3000/talent/getProfile', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`, // Include the token in the Authorization header
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log('data: ', data);
+      if (data.profile) {
+        navigate('/talent-profile'); // Redirect if profile exists
+      } else {
+        console.log('Profile not found');
+      }
+    })
+    .catch((error) => {
+      console.error('Error checking user profile:', error);
+    });
+  }, []);
+
+  const navigate = useNavigate(); // Initialize navigate
+
   const [formData, setFormData] = useState<{
     name: string;
-    phone: string;
+    phoneNumber: string;
     dateOfBirth: string;
     country: string;
     position: string;
     currentClub: string;
     preferredFoot: string;
-    experienceLevel: string;
-    mediaContent: string;
-    mediaUrl: string;
+    experience: string;
+    mediaContent: { 
+      type: string;
+      url: string;
+      fileUrl: string;
+      fileType: string;
+    };
     skills: { [key: string]: number };
   }>({
     name: '',
-    phone: '',
+    phoneNumber: '',
     dateOfBirth: '',
     country: '',
     position: '',
     currentClub: '',
     preferredFoot: '',
-    experienceLevel: '',
-    mediaContent: '',
-    mediaUrl: '',
+    experience: '',
+    mediaContent: { 
+      type: '',      // Initially empty or placeholder
+      url: '',       // Initially empty or placeholder
+      fileUrl: '',   // Initially empty or placeholder
+      fileType: ''   // Initially empty or placeholder
+    },
     skills: {}
   });
 
@@ -54,21 +99,22 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
     { code: 'SA', name: 'South Africa', flag: '🇿🇦', dialCode: '+27' },
   ];
 
-
   const getCountryByCode = (code: string) => {
     return countries.find(country => country.code === code) || null;
   };
 
   const isFormValid = () => {
     const requiredFields = formData.name && 
-                         formData.phone && 
+                         formData.phoneNumber && 
                          formData.dateOfBirth &&
                          formData.country &&
                          formData.position && 
                          formData.currentClub &&
-                         formData.experienceLevel &&
-                         formData.mediaUrl &&
-                         formData.mediaContent;
+                         formData.experience &&
+                         formData.mediaContent.url &&
+                         formData.mediaContent.type &&
+                         formData.mediaContent.fileUrl && 
+                         formData.mediaContent.fileType;
     
     // Only require preferred foot for Football discipline
     if (discipline === 'Football' && !formData.preferredFoot) {
@@ -78,15 +124,44 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
     return requiredFields;
   };
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  // Handle Submit
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('Submit button clicked'); // Debugging
+
     if (!isFormValid()) {
       setShowAlert(true);
       setTimeout(() => setShowAlert(false), 3000);
       return;
     }
-    // Handle form submission
-    console.log('Form submitted:', formData);
+
+    const token = localStorage.getItem('authToken'); // Retrieve the token
+    console.log('token:: ', token);
+
+    if (!token) {
+      console.error('No token found');
+      return; // Handle the error or show an alert to the user
+    }
+
+    try {
+      const response = await fetch('http://localhost:3000/talent/createProfile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`, // Include the token here
+        },
+        body: JSON.stringify(formData),
+      });
+      console.log('formData: ', formData); // Debugging formData
+
+      if (!response.ok) {
+        throw new Error('Failed to submit profile');
+      }
+
+      navigate('/talent-profile'); // Redirect to profile page after successful submission
+    } catch (error) {
+      console.error('Error submitting profile:', error);
+    }
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,9 +169,13 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
       const file = e.target.files[0];
       setFormData(prev => ({
         ...prev,
-        mediaUrl: file.name
+        mediaContent: { 
+          type: file.type,        // Set the file type (e.g., image/png)
+          url: file.name,         // Use the file name as the URL or actual URL if uploading
+          fileUrl: file.name,     // Add fileUrl field required by the server
+          fileType: file.type     // Add fileType field required by the server
+        }
       }));
-      // Handle file upload logic here
       console.log('File selected:', file);
     }
   };
@@ -107,13 +186,18 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
       ...prev,
       country: countryCode,
       // Reset phone when country changes
-      phone: countryCode ? '' : prev.phone
+      phoneNumber: countryCode ? '' : prev.phoneNumber
     }));
   };
 
+  
+
+
   return (
+   <> 
+   <Navbar></Navbar>
     <div className="container-fluid py-4 px-4 bg-light">
-      {/* Navbar */}
+      
       <div className="row mb-4">
         <div className="col-12">
           <div className="card shadow-sm">
@@ -172,8 +256,8 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
                         <input
                           type="text"
                           className="form-control"
-                          value={formData.phone}
-                          onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                          value={formData.phoneNumber}
+                          onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
                           placeholder="Phone number"
                           required
                         />
@@ -241,8 +325,8 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
                     <label className="form-label">Experience Level</label>
                     <select
                       className="form-select"
-                      value={formData.experienceLevel}
-                      onChange={(e) => setFormData(prev => ({ ...prev, experienceLevel: e.target.value }))}
+                      value={formData.experience}
+                      onChange={(e) => setFormData(prev => ({ ...prev, experience: e.target.value }))}
                       required
                     >
                       <option value="">Select Experience Level</option>
@@ -283,31 +367,17 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
                   </div>
                 </div>
 
-                {/* Media Subject and Upload */}
+                {/* Upload Media */}
                 <div className="mb-4">
-                  <label className="form-label">Media Content</label>
-                  <input
-                    type="text"
-                    className="form-control mb-3"
-                    value={formData.mediaContent}
-                    onChange={(e) => setFormData(prev => ({ ...prev, mediaSubject: e.target.value }))}
-                    placeholder="Enter content for your media"
-                    required
-                  />
-                  
-                  <div className="border border-2 border-dashed rounded-3 p-5 text-center bg-light">
+                    <label className="form-label">Upload Media</label>
                     <input
                       type="file"
-                      className="d-none"
-                      id="mediaUpload"
+                      className="form-control"
                       onChange={handleFileChange}
+                      accept="image/*, video/*"
+                      required
                     />
-                    <label htmlFor="mediaUpload" className="btn btn-primary">
-                      Choose Files
-                    </label>
-                    {formData.mediaUrl && <p className="mt-2">{formData.mediaUrl}</p>}
                   </div>
-                </div>
 
                 <button
                   type="submit"
@@ -321,6 +391,7 @@ const TalentDashboard: React.FC<TalentsProps> = ({ discipline }) => {
         </div>
       </div>
     </div>
+  </> 
   );
 };
 

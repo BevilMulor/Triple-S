@@ -4,11 +4,37 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongoose= require('mongoose');
+//const multer = require("multer");//for image file uploads
+
+
+//setting up cors
+// The cors middleware in Express allows your backend to accept requests from different origins
+//  (like your frontend running on a different port). 
+//  However, the way you configure it affects who can access your backend.
+var app = express();
+
+const cors = require("cors");  //allows all origins. simple but dangerous
+// app.use(cors()); // Enable CORS for all requests
+
+// Allow CORS for all routes (General Configuration)
+app.use(
+  cors({
+    origin: "*", // Allow all origins for public endpoints
+    methods: "GET, POST, PUT, DELETE",
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow JWT headers
+  })
+);
+
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var authRouter = require('../backend_Api/routes/auth');
+var talentRouter = require('../backend_Api/routes/talent');
+var coachRouter = require('./routes/coach');
+var scoutRouter = require('./routes/scouts');
 
-var app = express();
+
 
 mongoose.connect('mongodb+srv://bmulor:zdW0MvDIPKrtQAk4@cluster0.bjrur.mongodb.net/')
  .then(()=>{console.log('Connected to the database')})
@@ -32,6 +58,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/auth',authRouter);
+app.use('/talent',talentRouter);
+app.use('/coach',coachRouter);
+app.use('/scout', scoutRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

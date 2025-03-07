@@ -1,138 +1,140 @@
-import { Navbar } from '../components/common/Navbar';
-import { Footer } from '../components/common/Footer';
-import { Card, CardContent } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
-import { Search } from 'lucide-react';
-import {
-  Accordion,
-  AccordionItem,
-  AccordionHeader,
-  AccordionPanel} from "../components/ui/Accordion";
+import React from 'react';
+import {Navbar} from '../components/common/Navbar';
+import {Footer} from '../components/common/Footer';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const Help = () => {
-  const faqCategories = [
-    {
-      category: "Getting Started",
-      questions: [
-        {
-          q: "How do I create an account?",
-          a: "You can create an account by clicking the 'Sign Up' button and selecting your role (Talent, Coach, or Scout). Fill in your details and follow the verification process."
-        },
-        {
-          q: "What documents do I need for verification?",
-          a: "Required documents vary by role. Talents need proof of age and identity, Coaches need certifications, and Scouts need organizational affiliation proof."
-        },
-        {
-          q: "How long does verification take?",
-          a: "Verification typically takes 24-48 hours. You'll receive email updates about your verification status."
-        }
-      ]
-    },
-    {
-      category: "Account Management",
-      questions: [
-        {
-          q: "How do I update my profile?",
-          a: "Navigate to your profile settings, click 'Edit Profile', and update your information. Don't forget to save changes."
-        },
-        {
-          q: "Can I change my role after signing up?",
-          a: "Role changes require admin approval. Contact support with your request and relevant documentation."
-        },
-        {
-          q: "How do I reset my password?",
-          a: "Click 'Forgot Password' on the login page and follow the instructions sent to your email."
-        }
-      ]
-    },
-    {
-      category: "Platform Features",
-      questions: [
-        {
-          q: "How do I connect with other users?",
-          a: "Use the search function to find users, view their profiles, and send connection requests. Messages can be sent once connections are accepted."
-        },
-        {
-          q: "How do I schedule meetings?",
-          a: "Use the calendar feature in your dashboard to propose meeting times with your connections."
-        },
-        {
-          q: "Can I share my profile publicly?",
-          a: "Yes, you can generate a public profile link from your settings. You control what information is visible."
-        }
-      ]
-    }
-  ];
-
+const Help: React.FC = () => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="d-flex flex-column min-vh-100">
       <Navbar />
-      <main className="flex-grow">
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="relative mb-8">
-              <input
-                type="text"
-                className="w-full border border-gray-300 rounded-lg py-2 px-4"
-                placeholder="Search for help..."
-              />
-              <Search className="absolute right-3 top-3 text-gray-400" />
+      <div className="container py-5 flex-grow-1">
+        <div className="text-center mb-5">
+          <h1 className="fw-bold mb-2">Help Center</h1>
+          <p className="text-secondary">
+            Find answers to common questions about using Triple S Talent platform
+          </p>
+        </div>
+
+        <div className="row g-4">
+          {/* Getting Started Section */}
+          <div className="col-md-4">
+            <div className="card h-100 shadow-sm">
+              <div className="card-body">
+                <div className="d-flex align-items-center mb-4">
+                  <div className="bg-primary bg-opacity-25 p-2 rounded-circle me-3">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" className="text-primary" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </div>
+                  <h2 className="card-title h5 fw-semibold mb-0">Getting Started</h2>
+                </div>
+
+                <div className="mb-4">
+                  <h3 className="text-primary fw-medium h6">How do I create an account?</h3>
+                  <p className="small text-secondary">
+                    You can sign up an account by clicking the 'Sign Up' button and selecting your role (Talent, Coach, or Scout). Fill in your details to complete registration.
+                  </p>
+                </div>
+
+                <div className="mb-4">
+                  <h3 className="text-primary fw-medium h6">What do I need for verification/profile?</h3>
+                  <p className="small text-secondary">
+                    Required documents vary by role. Talents need proof of age and identity, Coaches need certifications, and Scouts need organizational affiliation proof.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-primary fw-medium h6">How long does verification take?</h3>
+                  <p className="small text-secondary">
+                    Verification typically takes 24-48 hours. You'll receive email updates about your verification status.
+                  </p>
+                </div>
+              </div>
             </div>
+          </div>
 
-            <section className="mb-12">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <Card className="text-center">
-                  <CardContent>
-                    <h3 className="text-xl font-semibold mb-2">Quick Start Guide</h3>
-                    <Button className="mt-4">View Guide</Button>
-                  </CardContent>
-                </Card>
-                <Card className="text-center">
-                  <CardContent>
-                    <h3 className="text-xl font-semibold mb-2">Video Tutorials</h3>
-                    <Button className="mt-4">Watch Videos</Button>
-                  </CardContent>
-                </Card>
-                <Card className="text-center">
-                  <CardContent>
-                    <h3 className="text-xl font-semibold mb-2">Contact Support</h3>
-                    <Button className="mt-4">Get Help</Button>
-                  </CardContent>
-                </Card>
+          {/* Account Management Section */}
+          <div className="col-md-4">
+            <div className="card h-100 shadow-sm">
+              <div className="card-body">
+                <div className="d-flex align-items-center mb-4">
+                  <div className="bg-primary bg-opacity-25 p-2 rounded-circle me-3">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" className="text-primary" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                    </svg>
+                  </div>
+                  <h2 className="card-title h5 fw-semibold mb-0">Account Management</h2>
+                </div>
+
+                <div className="mb-4">
+                  <h3 className="text-primary fw-medium h6">How do I update my profile?</h3>
+                  <p className="small text-secondary">
+                    Go to your profile settings, click "Edit Profile", and update your information. Don't forget to save changes.
+                  </p>
+                </div>
+
+                <div className="mb-4">
+                  <h3 className="text-primary fw-medium h6">Can I change my role after signing up?</h3>
+                  <p className="small text-secondary">
+                    Role changes require admin approval. Contact support with your request and relevant documentation.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-primary fw-medium h6">How do I reset my password?</h3>
+                  <p className="small text-secondary">
+                    Click "Forgot Password" on the login page and follow the instructions sent to your email.
+                  </p>
+                </div>
               </div>
+            </div>
+          </div>
 
-              {faqCategories.map((category, index) => (
-                <Accordion key={index} className="mb-8">
-                  <AccordionItem>
-                    <AccordionHeader onClick={() => {}}>
-                      {category.category}
-                    </AccordionHeader>
-                    <AccordionPanel isOpen={true}>
-                      {category.questions.map((question, qIndex) => (
-                        <div key={qIndex} className="mb-4">
-                          <h4 className="font-semibold">{question.q}</h4>
-                          <p>{question.a}</p>
-                        </div>
-                      ))}
-                    </AccordionPanel>
-                  </AccordionItem>
-                </Accordion>
-              ))}
-            </section>
+          {/* Platform Features Section */}
+          <div className="col-md-4">
+            <div className="card h-100 shadow-sm">
+              <div className="card-body">
+                <div className="d-flex align-items-center mb-4">
+                  <div className="bg-primary bg-opacity-25 p-2 rounded-circle me-3">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" className="text-primary" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                  </div>
+                  <h2 className="card-title h5 fw-semibold mb-0">Platform Features</h2>
+                </div>
 
-            <section className="bg-gray-50 rounded-lg p-8 text-center">
-              <h2 className="text-2xl font-semibold mb-4">Still Need Help?</h2>
-              <p className="text-gray-600 mb-6">
-                Our support team is available 24/7 to assist you
-              </p>
-              <div className="flex justify-center gap-4">
-                <Button>Contact Support</Button>
-                <Button>Submit Ticket</Button>
+                <div className="mb-4">
+                  <h3 className="text-primary fw-medium h6">How do I connect with other users?</h3>
+                  <p className="small text-secondary">
+                    Use the search function to find users, view their profiles, and send connection requests. Messages can be sent once connections are established.
+                  </p>
+                </div>
+
+                <div className="mb-4">
+                  <h3 className="text-primary fw-medium h6">How do I schedule meetings?</h3>
+                  <p className="small text-secondary">
+                    Use the calendar feature in your dashboard to propose meeting times with your connections.
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="text-primary fw-medium h6">Can I share my profile publicly?</h3>
+                  <p className="small text-secondary">
+                    Yes, you can generate a public profile link from your settings. You control what information is visible.
+                  </p>
+                </div>
               </div>
-            </section>
+            </div>
           </div>
         </div>
-      </main>
+
+        <div className="text-center mt-5">
+          <p className="text-secondary mb-3">Still need help? <a href="#" className="text-primary text-decoration-none">Contact our support team</a></p>
+          <button className="btn btn-dark">
+            Contact Support
+          </button>
+        </div>
+      </div>
       <Footer />
     </div>
   );

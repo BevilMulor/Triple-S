@@ -13,16 +13,66 @@ import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
 import TalentProfile from './pages/TalentProfile';
 
+//auth
+//import { useAuth } from './auth/realAuthContext';
+import RealPrivateRoute from './auth/RealPrivateRoute';
+import ErrorBoundary from './auth/errorBoundary';
+ import { RealAuthProvider } from './auth/realAuthContext';
 
 
-const App = () => {
+
+const App: React.FC = () => {
+  //In React, React.FC (or React.FunctionComponent) is a TypeScript type used to define functional components
+  //const { isLoggedIn } = useAuth();
+
   return (
+    <RealAuthProvider>
+    <ErrorBoundary>
     <Router>
       <Routes>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/talents" element={<Talents userEmail="user@example.com" discipline="Football" />} />
+
+
+        {/* Protect routes based on role */}
+        <Route
+          path="/coaches"
+          element={
+            <RealPrivateRoute allowedRoles={['Coach']}>
+              <Coaches />
+            </RealPrivateRoute>
+          }
+        />
+        <Route
+          path="/talents"
+          element={
+            <RealPrivateRoute allowedRoles={['Talent']}>
+              <Talents userEmail="user@example.com" discipline="Football" />
+            </RealPrivateRoute>
+          }
+        />
+        <Route
+          path="/talent-profile"
+          element={
+            <RealPrivateRoute allowedRoles={['Scout','Talent','Coach']}>
+              <TalentProfile/>
+            </RealPrivateRoute>
+          }
+        />
+        <Route
+          path="/scouts"
+          element={
+            <RealPrivateRoute allowedRoles={['Scout']}>
+              <Scouts />
+            </RealPrivateRoute>
+          }
+        />
+        
+        {/* <Route path="/talents" element={<Talents userEmail="user@example.com" discipline="Football" />} />
         <Route path="/coaches" element={<Coaches />} />
-        <Route path="/scouts" element={<Scouts />} />
+        <Route path="/scouts" element={<Scouts />} /> */}
+
+
+
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
@@ -31,10 +81,12 @@ const App = () => {
         <Route path="/help" element={<Help />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/privacy" element={<Privacy />} />
-        <Route path="/talent-profile" element={<TalentProfile />} />
+        
 
       </Routes>
     </Router>
+   </ErrorBoundary>
+     </RealAuthProvider> 
   );
 };
 

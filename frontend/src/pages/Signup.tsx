@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { AlertCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';//redirecting user
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -9,13 +10,15 @@ const SignUpPage = () => {
     role: '',
     discipline: ''
   });
-
+  const navigate = useNavigate()//initialise navigate
+  
   const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string; role?: string; discipline?: string }>({});
 
   const roles = ['Talent', 'Coach', 'Scout'];
   const disciplines = ['Football', 'Basketball', 'Art'];
 
   const validateForm = () => {
+    ;
     const newErrors: { email?: string; password?: string; confirmPassword?: string; role?: string; discipline?: string } = {};
     
     if (!formData.email) {
@@ -46,10 +49,58 @@ const SignUpPage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
+  const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
+  
     if (validateForm()) {
-      console.log('Form submitted:', formData);
+      const { role, confirmPassword, ...userData } = formData; // Exclude confirmPassword
+      //console.log('formData:',formData);
+      // Define API endpoint dynamically based on role
+      let apiUrl = "http://www.localhost:3000"; // Ensure this is correctly formatted
+      if (role === "Talent") {
+        apiUrl += "/auth/talentRegister";
+      } else if (role === "Coach") {
+        apiUrl += "/auth/coachRegister";
+      } else if (role === "Scout") {
+        apiUrl += "/auth/scoutRegister";
+      } else {
+        console.error("Invalid role selected");
+        return;
+      }
+
+     console.log('userData that is being posted: ',userData);
+  
+      try {
+        const response = await fetch(apiUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userData) // `confirmPassword` is not included
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        const result = await response.json();
+        navigate('/login'); // Redirect to login page
+        console.log("Registration successful:", result);
+        alert("Registration successful!");
+
+        
+  
+        // Optionally, reset the form after successful submission
+        setFormData({
+          email: "",
+          password: "",
+          confirmPassword: "",
+          role: "",
+          discipline: ""
+        });
+      } catch (error) {
+        console.error("Registration failed:");
+        alert("Registration failed. Please try again.");
+        
+      }
     }
   };
 

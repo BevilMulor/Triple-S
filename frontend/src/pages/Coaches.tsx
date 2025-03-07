@@ -1,12 +1,39 @@
 import { useState, useEffect } from 'react';
-import { MessageCircle, Bell } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Bell } from 'lucide-react';
+import { Navbar } from '../components/common/Navbar';
+import { useAuth } from '../auth/realAuthContext';
 
 const CoachDashboard = () => {
+  const { user } = useAuth();  // Example: useAuth() from a context provider
+  console.log('user:', user);
+  
   // State for the coach's discipline (pulled from auth/profile)
   const [coachDiscipline] = useState('Football');
   const [selectedTalent, setSelectedTalent] = useState('');
-  const [talents, setTalents] = useState<{ id: number; name: string; age: number; position: string; location: string; experience: string; image: string; }[]>([]);
+  const [talents, setTalents] = useState<{
+    _id: string;
+    email: string;
+    discipline: string;
+    dashboard: {
+      _id: string;
+      name: string;
+      phoneNumber: string;
+      dateOfBirth: string;
+      country: string;
+      position: string;
+      experience: string;
+      currentClub: string;
+      preferredFoot: string;
+      mediaContent: {
+        fileType: string;
+        fileUrl: string;
+        _id: string;
+      }[];
+    }[];
+    review: any[];
+    createdAt: string;
+    __v: number;
+  }[]>([]);
   const [ratings, setRatings] = useState({
     overall: 3,
     skill1: 8,
@@ -20,39 +47,27 @@ const CoachDashboard = () => {
     experienceLevel: 'All Levels'
   });
 
-  // Mock talent data - in a real app, this would come from an API
+  // Fetch talents when the component mounts
   useEffect(() => {
-    // This would be fetched based on the coach's discipline
-    const mockTalentData: { [key: string]: { id: number; name: string; age: number; position: string; location: string; experience: string; image: string; }[] } = {
-      'Football': [
-        { id: 1, name: 'John Smith', age: 19, position: 'Striker', location: 'London, UK', experience: '3 years experience', image: '/api/placeholder/320/180' },
-        { id: 2, name: 'David Wilson', age: 21, position: 'Goalkeeper', location: 'Manchester, UK', experience: '5 years experience', image: '/api/placeholder/320/180' },
-        { id: 3, name: 'Sarah Johnson', age: 20, position: 'Midfield', location: 'Liverpool, UK', experience: '4 years experience', image: '/api/placeholder/320/180' },
-      ],
-      'Basketball': [
-        { id: 1, name: 'Michael Johnson', age: 19, position: 'Point Guard', location: 'Chicago, US', experience: '2 years experience', image: '/api/placeholder/320/180' },
-        { id: 2, name: 'James Wilson', age: 20, position: 'Shooting Guard', location: 'New York, US', experience: '3 years experience', image: '/api/placeholder/320/180' },
-      ],
-      'Art': [
-        { id: 1, name: 'Emma Thompson', age: 22, position: 'Painter', location: 'Paris, FR', experience: '4 years experience', image: '/api/placeholder/320/180' },
-        { id: 2, name: 'Luis Garcia', age: 25, position: 'Sculptor', location: 'Madrid, ES', experience: '6 years experience', image: '/api/placeholder/320/180' },
-      ]
-    };
-    
-    setTalents(mockTalentData[coachDiscipline as keyof typeof mockTalentData] || []);
-  }, [coachDiscipline]);
+    const fetchTalents = async () => {
+      try {
+        // Make the GET request to fetch talents from the backend
+        const response = await fetch('http://localhost:3000/talent/getTalents');
+        
+        if (!response.ok) {
+          throw new Error('Failed to fetch talents');
+        }
 
-  // Function to navigate to talent profile
-  // const navigateToProfile = (talentId: number) => {
-  //   router.push({
-  //     pathname: '/talent-profile',
-  //     query: { 
-  //       id: talentId,
-  //       viewMode: 'coach',
-  //       discipline: coachDiscipline
-  //     }
-  //   });
-  // };
+        const data = await response.json();
+        setTalents(data); // Store fetched data in the talents state
+      } catch (error) {
+        console.error(error);
+        // Optionally, handle errors (e.g., show a message to the user)
+      }
+    };
+
+    fetchTalents();
+  }, []); // Empty dependency array ensures this runs only once after the component mounts
 
   // Handle rating change
   const handleRatingChange = (field: string, value: string) => {
@@ -80,12 +95,55 @@ const CoachDashboard = () => {
   };
 
   // Handle submit rating and comments
-  const handleSubmitRating = () => {
-    console.log('Submitted rating for', selectedTalent, ':', ratings, comments);
-    // This would send data to an API in a real application
-    alert('Rating submitted successfully!');
+  const handleSubmitRating = async () => {
+    if (!selectedTalent || !ratings.overall || !comments) {
+      alert('Please make sure to select a talent, provide a rating, and add a comment.');
+      return;
+    }
+  
+    try {
+      // Retrieve the token from localStorage (or another storage method)
+      const token = localStorage.getItem('authToken');
+      
+      if (!token) {
+        alert('You must be logged in to submit a rating.');
+        return;
+      }
+  
+      // Assuming the coachId is stored in the token or auth context
+      const coachId = user ? user._id : '';  // Replace with actual coachId from your user context
+  
+      const response = await fetch('http://localhost:3000/coach/submitReview', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          coachId,             // Use the coachId from the logged-in user
+          talentUserId: selectedTalent, // Use the selected talentId
+          ballDistributionR: ratings.skill1,
+          composureR: ratings.skill2,
+          dribblingR: ratings.skill3,
+          comment: comments,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error('Failed to submit rating');
+      }
+  
+      await response.json();
+      alert('Rating submitted successfully!');
+      // Reset the form after success
+      setSelectedTalent('');
+      setRatings({ overall: 3, skill1: 8, skill2: 7, skill3: 9 });
+      setComments('');
+    } catch (error) {
+      console.error('Error submitting rating:', error);
+      alert('There was an error submitting your rating.');
+    }
   };
-
   // Get dynamic skill labels based on discipline
   const getSkillLabels = () => {
     switch(coachDiscipline) {
@@ -101,8 +159,11 @@ const CoachDashboard = () => {
   };
 
   const skillLabels = getSkillLabels();
+  console.log('talents: ',talents);
 
   return (
+    <>
+    <Navbar></Navbar>
     <div className="container-fluid bg-light py-4 min-vh-100">
       {/* Header */}
       <div className="row mb-4">
@@ -194,155 +255,166 @@ const CoachDashboard = () => {
         </div>
       </div>
 
-      {/* Talent Cards */}
       <div className="row mb-4">
-        {talents.map(talent => (
-          <div className="col-md-4 mb-3" key={talent.id}>
-            <div className="card shadow-sm h-100">
-              <div className="position-relative">
-                <img src={talent.image} className="card-img-top" alt={talent.name} />
-                <span className="position-absolute top-0 end-0 m-2 badge bg-success">Available</span>
-                <div className="position-absolute top-0 start-0 m-2">
-                  <span className="badge bg-primary">{talent.position}</span>
-                </div>
-              </div>
-              <div className="card-body">
-                <h5 className="card-title">{talent.name}</h5>
-                <div className="d-flex mb-2">
-                  <div className="me-3">
-                    <small className="text-muted">
-                      <i className="bi bi-geo-alt me-1"></i>
-                      {talent.location}
-                    </small>
-                  </div>
-                </div>
-                <div className="d-flex mb-2">
-                  <div className="me-3">
-                    <small className="text-muted">
-                      <i className="bi bi-calendar me-1"></i>
-                      Age: {talent.age}
-                    </small>
-                  </div>
-                </div>
-                <div className="d-flex mb-3">
-                  <div>
-                    <small className="text-muted">
-                      <i className="bi bi-trophy me-1"></i>
-                      {talent.experience}
-                    </small>
-                  </div>
-                </div>
-                <div className="d-flex justify-content-between">
-                  <Link to={`/talent-profile`} className="btn btn-primary w-100 me-1">
-                    View Profile
-                  </Link>
-                  <button className="btn btn-outline-secondary" style={{ width: '40px' }}>
-                    <MessageCircle size={16} />
-                  </button>
-                </div>
-              </div>
+  {talents.map(talent => (
+    <div className="col-md-4 mb-3" key={talent._id}>
+      <div className="card shadow-sm h-100">
+        <div className="position-relative">
+          {/* Use the first media content or a placeholder if empty */}
+          <img 
+            src={talent.dashboard[0]?.mediaContent[0]?.fileUrl || '/api/placeholder/image.jpg'} 
+            className="card-img-top" 
+            alt={talent.dashboard[0]?.name} 
+          />
+          <span className="position-absolute top-0 end-0 m-2 badge bg-success">Available</span>
+          <div className="position-absolute top-0 start-0 m-2">
+            <span className="badge bg-primary">{talent.dashboard[0]?.position}</span>
+          </div>
+        </div>
+        <div className="card-body">
+          <h5 className="card-title">{talent.dashboard[0]?.name}</h5>
+          <div className="d-flex mb-2">
+            <div className="me-3">
+              <small className="text-muted">
+                <i className="bi bi-geo-alt me-1"></i>
+                {talent.dashboard[0]?.country || 'Unknown'}
+              </small>
             </div>
           </div>
-        ))}
-      </div>
-
-      {/* Rating Card */}
-      <div className="row mb-4">
-        <div className="col-12">
-          <div className="card shadow-sm">
-            <div className="card-body">
-              <h5 className="card-title mb-3">Rate Talent</h5>
-              <div className="mb-3">
-                <label className="form-label">Select Talent</label>
-                <select 
-                  className="form-select" 
-                  value={selectedTalent} 
-                  onChange={(e) => setSelectedTalent(e.target.value)}
-                >
-                  <option value="">Select a talent</option>
-                  {talents.map(talent => (
-                    <option key={talent.id} value={talent.id}>{talent.name}</option>
-                  ))}
-                </select>
-              </div>
-
-              {selectedTalent && (
-                <>
-                  <div className="mb-3">
-                    <label className="form-label">Overall Rating</label>
-                    <div>
-                      {[1, 2, 3, 4, 5].map((star) => (
-                        <span 
-                          key={star} 
-                          onClick={() => handleStarClick(star)}
-                          style={{ cursor: 'pointer', fontSize: '24px', color: star <= ratings.overall ? '#ffc107' : '#e4e5e9' }}
-                        >
-                          ★
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="row">
-                    <div className="col-md-4 mb-3">
-                      <label className="form-label">{skillLabels[0]}</label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        min="1"
-                        max="10"
-                        value={ratings.skill1}
-                        onChange={(e) => handleRatingChange('skill1', e.target.value)}
-                      />
-                    </div>
-                    <div className="col-md-4 mb-3">
-                      <label className="form-label">{skillLabels[1]}</label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        min="1"
-                        max="10"
-                        value={ratings.skill2}
-                        onChange={(e) => handleRatingChange('skill2', e.target.value)}
-                      />
-                    </div>
-                    <div className="col-md-4 mb-3">
-                      <label className="form-label">{skillLabels[2]}</label>
-                      <input
-                        type="number"
-                        className="form-control"
-                        min="1"
-                        max="10"
-                        value={ratings.skill3}
-                        onChange={(e) => handleRatingChange('skill3', e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mb-3">
-                    <label className="form-label">Coach Comments</label>
-                    <textarea
-                      className="form-control"
-                      rows={4}
-                      placeholder="Enter your feedback and comments..."
-                      value={comments}
-                      onChange={(e) => setComments(e.target.value)}
-                    ></textarea>
-                  </div>
-
-                  <button 
-                    className="btn btn-primary" 
-                    onClick={handleSubmitRating}
-                  >
-                    Submit Rating & Comments
-                  </button>
-                </>
-              )}
+          <div className="d-flex mb-2">
+            <div className="me-3">
+              <small className="text-muted">
+                <i className="bi bi-calendar me-1"></i>
+                Age: {talent.dashboard[0]?.dateOfBirth ? new Date().getFullYear() - new Date(talent.dashboard[0]?.dateOfBirth).getFullYear() : 'N/A'}
+              </small>
             </div>
+          </div>
+          <div className="d-flex mb-3">
+            <div>
+              <small className="text-muted">
+                <i className="bi bi-trophy me-1"></i>
+                {talent.dashboard[0]?.experience || 'Experience not provided'}
+              </small>
+            </div>
+          </div>
+          <div className="d-flex justify-content-between">
+            {/* <Link to={`/talent-profile/${talent._id}`} className="btn btn-primary w-100 me-1">
+              View Profile
+            </Link>
+            <button className="btn btn-outline-secondary" style={{ width: '40px' }}>
+              <MessageCircle size={16} />
+            </button> */}
           </div>
         </div>
       </div>
     </div>
+  ))}
+</div>
+
+      {/* Rating Card */}
+<div className="row mb-4">
+  <div className="col-12">
+    <div className="card shadow-sm">
+      <div className="card-body">
+        <h5 className="card-title mb-3">Rate Talent</h5>
+        <div className="mb-3">
+          <label className="form-label">Select Talent</label>
+          <select 
+            className="form-select" 
+            value={selectedTalent} 
+            onChange={(e) => setSelectedTalent(e.target.value)}
+          >
+            <option value="">Select a talent</option>
+            {talents.map(talent => (
+              // Use the talent._id as the value and the talent.dashboard[0].name as the display text
+              <option key={talent._id} value={talent._id}>
+                {talent.dashboard[0]?.name || 'Unknown Talent'}
+              </option>
+            ))}
+          </select>
+        </div>
+
+            {selectedTalent && (
+              <>
+                <div className="mb-3">
+                  <label className="form-label">Overall Rating</label>
+                  <div>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span 
+                        key={star} 
+                        onClick={() => handleStarClick(star)}
+                        style={{ cursor: 'pointer', fontSize: '24px', color: star <= ratings.overall ? '#ffc107' : '#e4e5e9' }}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="row">
+                  <div className="col-md-4 mb-3">
+                    <label className="form-label">{skillLabels[0]}</label>
+                    <input
+                      type="range"
+                      className="form-range"
+                      min="1"
+                      max="10"
+                      value={ratings.skill1}
+                      onChange={(e) => handleRatingChange('skill1', e.target.value)}
+                    />
+                    <small>{ratings.skill1}</small>
+                  </div>
+                  <div className="col-md-4 mb-3">
+                    <label className="form-label">{skillLabels[1]}</label>
+                    <input
+                      type="range"
+                      className="form-range"
+                      min="1"
+                      max="10"
+                      value={ratings.skill2}
+                      onChange={(e) => handleRatingChange('skill2', e.target.value)}
+                    />
+                    <small>{ratings.skill2}</small>
+                  </div>
+                  <div className="col-md-4 mb-3">
+                    <label className="form-label">{skillLabels[2]}</label>
+                    <input
+                      type="range"
+                      className="form-range"
+                      min="1"
+                      max="10"
+                      value={ratings.skill3}
+                      onChange={(e) => handleRatingChange('skill3', e.target.value)}
+                    />
+                    <small>{ratings.skill3}</small>
+                  </div>
+                </div>
+
+                <div className="mb-3">
+                  <label className="form-label">Comments</label>
+                  <textarea
+                    className="form-control"
+                    value={comments}
+                    onChange={(e) => setComments(e.target.value)}
+                    rows={3}
+                  />
+                </div>
+
+                <button className="btn btn-primary" onClick={handleSubmitRating}>
+                  Submit Rating
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+
+    </div>
+    </>
   );
 };
 

@@ -7,7 +7,7 @@ Triple S is a scouting support system designed to connect young, raw talent with
 - **Vite** - Fast build tool for modern web applications.
 - **React** - JavaScript library for building user interfaces.
 - **TypeScript** - Strongly typed JavaScript for better development.
-- **Tailwind CSS** - Utility-first CSS framework for styling.
+- **Bootstrap CSS** - A responsive CSS framework with prebuilt components and a grid system for fast and consistent styling.
 - **React Router** - Declarative routing for React applications.
 - **Axios** - Promise-based HTTP client for API requests.
 - **Lucide-React** - Icon library for a modern UI.
@@ -66,7 +66,8 @@ Triple S is a scouting support system designed to connect young, raw talent with
   npm run build
   ```
 
-Link for the Video Recording
+Link for the Initial software product/solution demonstration Video Recording
 ```
 https://drive.google.com/file/d/1cbnf174e1LeRdVAEvI5Bzxt1ST80GSeH/view?usp=sharing
 ```
+Link for the Final version of the product/solution
