@@ -5,8 +5,13 @@ To access Github Repository
 ```
 https://github.com/BevilMulor/Triple-S
 ```
-Link of the Initial software product/solution demonstration
+Video nink for the Initial software product/solution demonstration
 ```
 https://drive.google.com/file/d/1cbnf174e1LeRdVAEvI5Bzxt1ST80GSeH/view?usp=sharing
 ```
-Link of Final version of the product/solution
+Video link for Final version of the product/solution
+
+Link to the Deployed Version of Triple S platform
+```
+https://vercel.com/bevil-mulors-projects/triple-s-tdn7
+```
