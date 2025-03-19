@@ -6,6 +6,7 @@ const coachUser =  mongoose.model('coachUser', new mongoose.Schema({
     password: { type: String, required: true},
     createdAt: { type: Date, default: Date.now},
     discipline:{type: String, required:true },
+    dashboard: [{ type: mongoose.Types.ObjectId, ref: 'coachDashboard' }],
     reviewsGiven:[{ type: mongoose.Types.ObjectId, ref:'review'}]//ref should point to a mongoose model
 }));
 

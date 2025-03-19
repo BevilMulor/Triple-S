@@ -131,7 +131,6 @@ router.post('/talentLogin', async (req, res) => {
             process.env.JWT_SECRET, // Secret key
             { expiresIn: '1h' } // Options
         );
-        
 
         // Return token
         const role = "Talent";

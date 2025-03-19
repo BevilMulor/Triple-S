@@ -12,13 +12,18 @@ import Help from './pages/Help';
 import Contact from './pages/Contact';
 import Privacy from './pages/Privacy';
 import TalentProfile from './pages/TalentProfile';
+import ScoutForm from './pages/scoutForm';
+import OpenTalentProfile from './pages/OpenTalentProfile';
 
 //auth
 //import { useAuth } from './auth/realAuthContext';
 import RealPrivateRoute from './auth/RealPrivateRoute';
 import ErrorBoundary from './auth/errorBoundary';
- import { RealAuthProvider } from './auth/realAuthContext';
 
+import { RealAuthProvider } from './auth/realAuthContext';
+import ScoutProfile from './pages/scoutProfile';
+import CoachForm from './pages/coachForm';
+import CoachProfile from './pages/coachProfile';
 
 
 const App: React.FC = () => {
@@ -27,66 +32,69 @@ const App: React.FC = () => {
 
   return (
     <RealAuthProvider>
-    <ErrorBoundary>
-    <Router>
-      <Routes>
-        <Route path="/" element={<Dashboard />} />
-
-
-        {/* Protect routes based on role */}
-        <Route
-          path="/coaches"
-          element={
-            <RealPrivateRoute allowedRoles={['Coach']}>
-              <Coaches />
-            </RealPrivateRoute>
-          }
-        />
-        <Route
-          path="/talents"
-          element={
-            <RealPrivateRoute allowedRoles={['Talent']}>
-              <Talents userEmail="user@example.com" discipline="Football" />
-            </RealPrivateRoute>
-          }
-        />
-        <Route
-          path="/talent-profile"
-          element={
-            <RealPrivateRoute allowedRoles={['Scout','Talent','Coach']}>
-              <TalentProfile/>
-            </RealPrivateRoute>
-          }
-        />
-        <Route
-          path="/scouts"
-          element={
-            <RealPrivateRoute allowedRoles={['Scout']}>
-              <Scouts />
-            </RealPrivateRoute>
-          }
-        />
-        
-        {/* <Route path="/talents" element={<Talents userEmail="user@example.com" discipline="Football" />} />
-        <Route path="/coaches" element={<Coaches />} />
-        <Route path="/scouts" element={<Scouts />} /> */}
-
-
-
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/how-it-works" element={<HowItWorks />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/success" element={<Success />} />
-        <Route path="/help" element={<Help />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/privacy" element={<Privacy />} />
-        
-
-      </Routes>
-    </Router>
-   </ErrorBoundary>
-     </RealAuthProvider> 
+      <ErrorBoundary>
+        <Router>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/talents" element={
+              <RealPrivateRoute allowedRoles={['Talent']}>
+                <Talents />
+              </RealPrivateRoute>
+            } />
+            <Route path="/coach-profile" element={
+              <RealPrivateRoute allowedRoles={['Coach']}>
+                <Coaches />
+              </RealPrivateRoute>
+            } />
+            <Route path="/scout-profile" element={
+              <RealPrivateRoute allowedRoles={['Scout']}>
+                <Scouts />
+              </RealPrivateRoute>
+            } />
+            <Route path="/talent-profile/:id" element={
+              <RealPrivateRoute allowedRoles={['Coach','Scout']}>
+                <OpenTalentProfile/>
+              </RealPrivateRoute>
+            } />
+              <Route path="/talent-profile" element={
+              <RealPrivateRoute allowedRoles={['Talent']}>
+                <TalentProfile />
+              </RealPrivateRoute>
+            } />
+            <Route path="/scouts" element={
+              <RealPrivateRoute allowedRoles={['Scout']}>
+                <ScoutForm/>
+              </RealPrivateRoute>
+            } />
+            <Route path="/actual-scout-profile" element={
+              <RealPrivateRoute allowedRoles={['Scout']}>
+                <ScoutProfile/>
+              </RealPrivateRoute>
+            } />
+            <Route path="/actual-coach-profile" element={
+              <RealPrivateRoute allowedRoles={['Coach']}>
+                <CoachProfile/>
+              </RealPrivateRoute>
+            } />
+            <Route path="/coaches" element={
+              <RealPrivateRoute allowedRoles={['Coach']}>
+                <CoachForm/>
+              </RealPrivateRoute>
+            } />
+            
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/help" element={<Help />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/coach-profile/:id" element={<CoachProfile />} />
+          </Routes>
+        </Router>
+      </ErrorBoundary>
+    </RealAuthProvider>
   );
 };
 

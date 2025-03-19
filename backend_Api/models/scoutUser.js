@@ -6,6 +6,7 @@ const scoutUser =  mongoose.model('scoutUser', new mongoose.Schema({
     password: { type: String, required: true},
     createdAt: { type: Date, default: Date.now},
     discipline:{type: String, required:true },
+    dashboard: [{ type: mongoose.Types.ObjectId, ref: 'scoutDashboard' }],
     talentRequirements:[{ type: mongoose.Types.ObjectId, ref:'talentRequirements'}]//ref should point to a mongoose model
 }));
 

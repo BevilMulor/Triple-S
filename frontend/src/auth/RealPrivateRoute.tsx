@@ -1,7 +1,7 @@
 // src/components/RealPrivateRoute.tsx
 import React, { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../auth/realAuthContext';
+import { useAuth } from './realAuthContext';
 
 interface RealPrivateRouteProps {
   children: React.ReactNode;
@@ -12,7 +12,6 @@ const RealPrivateRoute: React.FC<RealPrivateRouteProps> = ({ children, allowedRo
   const { isLoggedIn, user } = useAuth();
 
   // Retrieve role from localStorage in case it's not in user object
-  const storedRole = localStorage.getItem('userRole');
 
   useEffect(() => {
     console.log(`isLoggedIn: ${isLoggedIn}, user:`, user);
@@ -23,15 +22,15 @@ const RealPrivateRoute: React.FC<RealPrivateRouteProps> = ({ children, allowedRo
     return <Navigate to="/login" replace />;
   }
 
-  // Get the role (priority: user.role → storedRole)
-  const userRole = user.role || storedRole;
-
-  // Redirect if role is not allowed
+  //Get the role (priority: user.role → storedRole)
+ let userRole=user.role;
+ // Redirect if role is not allowed
   if (!userRole || !allowedRoles.includes(userRole)) {
+    console.log('this is the code running', 'user role from local storage', userRole)
     return <Navigate to="/login" replace />;
   }
 
-  // Render the protected content
+  //Render the protected content
   return <>{children}</>;
 };
 

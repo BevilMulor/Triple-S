@@ -1,13 +1,13 @@
-// realAuthContext.tsx
-import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import { createContext, useContext, useState, ReactNode, useEffect, SetStateAction } from 'react';
 
 // Define types for our auth context state and methods
 interface User {
-  review(review: User): unknown;
+  reviews: never[]; // Changed from review to reviews
+  setReviews: SetStateAction<never[]>; // Changed from review to setReviews
   _id: any;
   email: string;
   discipline: string;
-  role:string;
+  role: string;
   // Add other user fields here as needed
 }
 
@@ -90,19 +90,3 @@ export const useAuth = (): RealAuthContextType => {
   }
   return context;
 };
-// Goal
-
-// To implement role-based access control (RBAC) and restrict access to specific parts of your application
-//  (like a coach’s dashboard) based on the user's role (Talent, Coach, Scout), you can follow these steps:
-
-// 1. Update Context to Include Role
-// You already have the user's role stored in the context, so you can easily use that to manage access
-//  control for specific parts of your app.
-
-// 2. Implement Protected Routes
-// You can create a wrapper component (PrivateRoute) that checks the user's role and whether they are logged in.
-//  This component will handle navigation based on the role of the user.
-
-// 3. Conditional Rendering Based on Role
-// When a user logs in, they’ll get a role, and based on that, you can control what parts of the app they can access. 
-// You can render different layouts or routes depending on the role.

@@ -1,14 +1,30 @@
 import { useState, useEffect } from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, MessageCircle } from 'lucide-react';
 import { Navbar } from '../components/common/Navbar';
 import { useAuth } from '../auth/realAuthContext';
+import { Link } from 'react-router-dom'; // Import Link and useNavigate for routing
+import { useNavigate } from 'react-router-dom';
 
+interface Media {
+  fileUrl: string;
+}
+
+interface ProfileData {
+  profile?: {
+    name?: string;
+    currentClub?: string;
+    experience?: string;
+    mediaContent?: Media[];
+  }[];
+}
 const CoachDashboard = () => {
   const { user } = useAuth();  // Example: useAuth() from a context provider
   console.log('user:', user);
   
   // State for the coach's discipline (pulled from auth/profile)
-  const [coachDiscipline] = useState('Football');
+  const navigate= useNavigate();
+  //const [coachDiscipline] = useState('Football');
+  const [coachDiscipline, setCoachDiscipline] = useState('Coach'); // Default to generic "Coach"
   const [selectedTalent, setSelectedTalent] = useState('');
   const [talents, setTalents] = useState<{
     _id: string;
@@ -46,6 +62,49 @@ const CoachDashboard = () => {
     ageRange: 'All Ages',
     experienceLevel: 'All Levels'
   });
+  const [] = useState<ProfileData | null>(null);
+  const [] = useState(true);
+
+  //fetch particular talent using params
+   // Fetch profile data - updated to use the id from URL if available
+  // Handle view profile click
+  // const handleViewProfile=()=>{
+  //   let id=talent.dashboard[0]._id;
+  //   // Use the id from URL params if available, otherwise use the default endpoint
+  //   const endpoint = id
+  //     ? `http://localhost:3000/talent/getOProfileById/${id}`
+  //     : 'http://localhost:3000/talent/getProfile';
+
+  //   fetch(endpoint, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+        
+  //     },
+  //   })
+  //     .then((response) => response.json())
+  //     .then((data: ProfileData) => {
+  //       setProfileData(data);
+  //     })
+  //     .catch((error) => {
+  //       console.error('Error checking user profile:', error);
+  //       setError('Failed to load profile');
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+
+  // }
+   
+    
+   
+
+  // Update coachDiscipline when user data is available
+  useEffect(() => {
+    if (user && user.discipline) {
+      setCoachDiscipline(user.discipline);
+    }
+  }, [user]);
 
   // Fetch talents when the component mounts
   useEffect(() => {
@@ -93,6 +152,11 @@ const CoachDashboard = () => {
       [name]: value
     });
   };
+
+  const handleProfileClick=()=>{
+    console.log("'go to profile' button clicked");
+    navigate('/actual-coach-profile');
+  }
 
   // Handle submit rating and comments
   const handleSubmitRating = async () => {
@@ -157,26 +221,44 @@ const CoachDashboard = () => {
         return ['Skill 1', 'Skill 2', 'Skill 3'];
     }
   };
-
+  const handleButtonClick=(id:any)=>{
+    
+    console.log('ViewProfile button clicked');
+    if(!id){
+       alert("No Profile Found");
+    }else{
+      navigate(`/talent-profile/${id}`)
+    }
+  }
   const skillLabels = getSkillLabels();
   console.log('talents: ',talents);
 
   return (
     <>
     <Navbar></Navbar>
-    <div className="container-fluid bg-light py-4 min-vh-100">
+    <div className="container-fluid p-0">
       {/* Header - Full width with dark blue background */}
-      <div className="row mb-4">
+      <div className="row m-0">
         <div className="col-12 px-0"> {/* Remove padding from column */}
           <div className="card shadow-sm bg-dark text-white" style={{ borderRadius: '0.5rem' }}> {/* Dark blue background and no rounded corners */}
             <div className="card-body d-flex justify-content-between align-items-center">
               <h2 className="mb-0">Coach Dashboard</h2>
               <div className="d-flex align-items-center">
+                <button onClick={handleProfileClick}>
                 <span className="badge bg-light text-primary me-3 px-3 py-2 rounded-pill">{coachDiscipline} Coach</span>
+                </button>
+                
                 <div className="dropdown">
                   <Bell className="text-white cursor-pointer" size={20} />
                 </div>
-                <img src="/api/placeholder/40/40" className="rounded-circle ms-3" alt="Profile" />
+                <Link to="/coach-profile">
+                  <img 
+                    src="/api/placeholder/40/40" 
+                    className="rounded-circle ms-3" 
+                    alt="Profile" 
+                    style={{ cursor: 'pointer' }}
+                  />
+                </Link>
               </div>
             </div>
           </div>
@@ -301,12 +383,21 @@ const CoachDashboard = () => {
                       </div>
                     </div>
                     <div className="d-flex justify-content-between">
-                      {/* <Link to={`/talent-profile/${talent._id}`} className="btn btn-primary w-100 me-1">
+                      
+                      
+
+                      <button 
+                        className="btn btn-primary w-100 me-1"
+                        onClick={() => handleButtonClick(talent?.dashboard?.[0]?._id)}
+                        
+
+                      >
                         View Profile
-                      </Link>
+                      </button>
+                     
                       <button className="btn btn-outline-secondary" style={{ width: '40px' }}>
                         <MessageCircle size={16} />
-                      </button> */}
+                      </button>
                     </div>
                   </div>
                 </div>

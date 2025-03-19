@@ -1,16 +1,60 @@
 import { useState, useEffect } from 'react'; 
-import { Bell } from 'lucide-react';
+import { Bell, MessageCircle } from 'lucide-react';
+import { Link as RouterLink } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Navbar } from '../components/common/Navbar';
 import { useAuth } from '../auth/realAuthContext';
+import { useNavigate } from 'react-router-dom';
 
-const positionsByDiscipline = {
+// Define proper types for discipline
+type Discipline = 'Football' | 'Basketball' | 'Art';
+
+// Define positions by discipline with type safety
+const positionsByDiscipline: Record<Discipline, string[]> = {
   Football: ['Goalkeeper', 'Defense', 'Midfield', 'Striker'],
   Basketball: ['Point Guard', 'Shooting Guard', 'Small Forward', 'Power Forward', 'Center'],
   Art: ['Musician', 'Painter', 'Sculptor']
 };
 
+// Define talent interface for type safety
+interface MediaContent {
+  fileType: string;
+  fileUrl: string;
+  _id: string;
+}
+
+interface Dashboard {
+  _id: string;
+  name: string;
+  phoneNumber: string;
+  dateOfBirth: string;
+  country: string;
+  position: string;
+  experience: string;
+  currentClub: string;
+  preferredFoot: string;
+  mediaContent: MediaContent[];
+}
+
+interface Talent {
+  _id: string;
+  email: string;
+  discipline: string;
+  dashboard: Dashboard[];
+  review: any[]; // Using any for now, can be refined later
+  createdAt: string;
+  __v: number;
+}
+
+// Define filters interface
+interface Filters {
+  position: string;
+  ageRange: string;
+  experienceLevel: string;
+}
+
 const ScoutDashboard = () => {
+  const navigate= useNavigate();
   const { user }= useAuth();
   const [] = useState('All Positions'); // Fixed the empty array
   const [requirements, setRequirements] = useState('');
@@ -19,37 +63,13 @@ const ScoutDashboard = () => {
     ageRange: 'All Ages',
     experienceLevel: 'All Levels'
   });
-
-  const [talents, setTalents] = useState<{
-    _id: string;
-    email: string;
-    discipline: string;
-    dashboard: {
-      _id: string;
-      name: string;
-      phoneNumber: string;
-      dateOfBirth: string;
-      country: string;
-      position: string;
-      experience: string;
-      currentClub: string;
-      preferredFoot: string;
-      mediaContent: {
-        fileType: string;
-        fileUrl: string;
-        _id: string;
-      }[];
-    }[];
-    review: any[];
-    createdAt: string;
-    __v: number;
-  }[]>([]);
+   const [discipline, setDiscipline] = useState<Discipline>('Football'); // Default value
+  const [talents, setTalents] = useState<Talent[]>([]);
 
   // Fetch talents when the component mounts
   useEffect(() => {
     const fetchTalents = async () => {
       try {
-        // Make the GET request to fetch talents from the backend
         const response = await fetch('http://localhost:3000/talent/getTalents');
         
         if (!response.ok) {
@@ -57,24 +77,23 @@ const ScoutDashboard = () => {
         }
 
         const data = await response.json();
-        setTalents(data); // Store fetched data in the talents state
+        setTalents(data);
       } catch (error) {
         console.error(error);
-        // Optionally, handle errors (e.g., show a message to the user)
       }
     };
 
     fetchTalents();
-  }, []); // Empty dependency array ensures this runs only once after the component mounts
+  }, []);
 
   
   // Mock user data
-  const scoutDiscipline = 'Football';
+  const scoutDiscipline = user?.discipline;
   
   
 
   // Handle filter change
-  const handleFilterChange = (e: { target: { name: any; value: any; }; }) => {
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFilters({
       ...filters,
@@ -85,75 +104,102 @@ const ScoutDashboard = () => {
   // Handle post requirement form submission
   const handleSubmitRequirements = async () => {
     const position = filters.position;
-    try{
+    try {
+      // Retrieve the token from localStorage
+      const token = localStorage.getItem('authToken');
+        
+      if (!token) {
+        alert('You must be logged in to submit a requirement.');
+        return;
+      }
 
-    // Retrieve the token from localStorage (or another storage method)
-    const token = localStorage.getItem('authToken');
-      
-    if (!token) {
-      alert('You must be logged in to submit a requirement.');
-      return;
-    }
-
-    // Assuming the coachId is stored in the token or auth context
-    if (!user) {
-      alert('User is not authenticated.');
-      return;
-    }
-    const scoutId = user._id;  // Replace with actual coachId from your user context
-  
-      // Make sure position and requirements are filled
-    if (!position || !requirements) {
-      alert("Please select a position and provide additional requirements.");
-      return;
-    }
+      if (!user) {
+        alert('User is not authenticated.');
+        return;
+      }
+      const scoutId = user._id;
     
-    // Send the data to the backend API
-    const response = await fetch('http://localhost:3000/scout/submitRequirements', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({
-        scoutId,
-        position,
-        requirements
-      })
-    });
+      // Make sure position and requirements are filled
+      if (!position || !requirements) {
+        alert("Please select a position and provide additional requirements.");
+        return;
+      }
+      
+      // Send the data to the backend API
+      const response = await fetch('http://localhost:3000/scout/submitRequirements', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          scoutId,
+          position,
+          requirements
+        })
+      });
 
-    const data = await response.json();
-    if (response.ok) {
-      alert('Requirement posted successfully!');
-      console.log(data);
-    } else {
-      alert('Error posting requirement.');
-      console.error(data);
-    }
-    }catch (error) {
+      const data = await response.json();
+      if (response.ok) {
+        alert('Requirement posted successfully!');
+        console.log(data);
+      } else {
+        alert('Error posting requirement.');
+        console.error(data);
+      }
+    } catch (error) {
       console.error('Error submitting Requirements:', error);
       alert('There was an error submitting talent requirements.');
     }
-    
   };
 
+  const handleButtonClick=(id:any)=>{
+    
+    console.log('ViewProfile button clicked');
+    if(!id){
+       alert("No Profile Found");
+    }else{
+      navigate(`/talent-profile/${id}`)
+    }
+  }
+  // const handleButtonClick=()=>{
+  //   navigate('/actual-talent-profile')
+  // }
+
+  const handleProfileClick=()=>{
+    console.log("'go to profile' button clicked");
+    navigate('/actual-scout-profile');
+  }
+
+  // Calculate age function with proper typing
+  const calculateAge = (dateOfBirth: string | undefined): string => {
+    if (!dateOfBirth) return 'N/A';
+    try {
+      return (new Date().getFullYear() - new Date(dateOfBirth).getFullYear()).toString();
+    } catch {
+      return 'N/A';
+    }
+  };
 
   return (
     <>
-    <Navbar></Navbar>
-    {/* Removed the bg-light class from container-fluid and removed padding */}
+    <Navbar />
     <div className="container-fluid p-0">
       {/* Navbar - Full width with dark blue background */}
       <div className="row m-0">
         <div className="col-12 p-0">
           <div className="card shadow-sm" style={{ 
-            backgroundColor: '#1a365d', 
-            borderRadius: '0', // Removed border radius for full-width effect
+            backgroundColor: '#212529', 
+            borderRadius: '0.5 rem',
           }}>
             <div className="card-body d-flex justify-content-between align-items-center px-4">
               <h2 className="mb-0 text-white">Scout Dashboard</h2>
               <div className="d-flex align-items-center">
-                <span className="badge bg-primary me-3 px-3 py-2 rounded-pill">{scoutDiscipline} Scout</span>
+                <button onClick={handleProfileClick}>
+                <span className="badge bg-light text-primary me-3 px-3 py-2 rounded-pill">{scoutDiscipline} Scout</span>
+                </button>
+                
+                
                 <div className="dropdown">
                   <Bell className="text-white cursor-pointer" size={20} />
                 </div>
@@ -182,7 +228,7 @@ const ScoutDashboard = () => {
                       onChange={handleFilterChange}
                     >
                       <option value="All Positions">All Positions</option>
-                      {positionsByDiscipline[scoutDiscipline]?.map((position) => (
+                      {positionsByDiscipline[discipline]?.map((position) => (
                         <option key={position} value={position}>{position}</option>
                       ))}
                     </select>
@@ -231,15 +277,15 @@ const ScoutDashboard = () => {
                   <img 
                     src={talent.dashboard[0]?.mediaContent[0]?.fileUrl || '/api/placeholder/image.jpg'} 
                     className="card-img-top" 
-                    alt={talent.dashboard[0]?.name} 
+                    alt={talent.dashboard[0]?.name || 'Talent'} 
                   />
                   <span className="position-absolute top-0 end-0 m-2 badge bg-success">Available</span>
                   <div className="position-absolute top-0 start-0 m-2">
-                    <span className="badge bg-primary">{talent.dashboard[0]?.position}</span>
+                    <span className="badge bg-primary">{talent.dashboard[0]?.position || 'Unknown'}</span>
                   </div>
                 </div>
                 <div className="card-body">
-                  <h5 className="card-title">{talent.dashboard[0]?.name}</h5>
+                  <h5 className="card-title">{talent.dashboard[0]?.name || 'Unknown'}</h5>
                   <div className="d-flex mb-2">
                     <div className="me-3">
                       <small className="text-muted">
@@ -252,7 +298,7 @@ const ScoutDashboard = () => {
                     <div className="me-3">
                       <small className="text-muted">
                         <i className="bi bi-calendar me-1"></i>
-                        Age: {talent.dashboard[0]?.dateOfBirth ? new Date().getFullYear() - new Date(talent.dashboard[0]?.dateOfBirth).getFullYear() : 'N/A'}
+                        Age: {calculateAge(talent.dashboard[0]?.dateOfBirth)}
                       </small>
                     </div>
                   </div>
@@ -265,12 +311,18 @@ const ScoutDashboard = () => {
                     </div>
                   </div>
                   <div className="d-flex justify-content-between">
-                    {/* <Link to={`/talent-profile/${talent._id}`} className="btn btn-primary w-100 me-1">
-                      View Profile
-                    </Link>
+                  <button 
+                        className="btn btn-primary w-100 me-1"
+                        onClick={() => handleButtonClick(talent?.dashboard?.[0]?._id)}
+                        // onClick={handleButtonClick}
+                        
+
+                      >
+                        View Profile
+                      </button>
                     <button className="btn btn-outline-secondary" style={{ width: '40px' }}>
                       <MessageCircle size={16} />
-                    </button> */}
+                    </button> 
                   </div>
                 </div>
               </div>
@@ -292,7 +344,7 @@ const ScoutDashboard = () => {
                   name="position"
                 >
                   <option value="All Positions">Select Position</option>
-                  {positionsByDiscipline[scoutDiscipline]?.map((position) => (
+                  {positionsByDiscipline[discipline]?.map((position) => (
                     <option key={position} value={position}>{position}</option>
                   ))}
                 </select>

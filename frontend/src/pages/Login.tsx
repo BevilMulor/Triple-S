@@ -1,3 +1,4 @@
+
 import { useState } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { useAuth } from '../auth/realAuthContext'; // Import the useAuth hook
@@ -73,16 +74,7 @@ const Login = () => {
         }
 
         const result = await response.json();
-        if (role === "Talent") {
-          navigate('/talents');
-        } else if (role === "Coach") {
-          navigate('/coaches');
-        } else if (role === "Scout") {
-          navigate('/scouts');
-        } else {
-          console.error("Invalid role selected");
-          return;
-        }
+     
         console.log('Login successful:', result);
        
 
@@ -93,7 +85,21 @@ const Login = () => {
         console.log('user: ',result.user.role)
         //localStorage.setItem('userRole', result.user.role);
 
-        alert('Login successful!');
+        if (role === "Talent") {
+          console.log('logging in as a talent')
+          return navigate('/talents');
+        } else if (role === "Coach") {
+          navigate('/actual-coach-profile');
+        } else if (role === "Scout" && result.user.dashboard.length > 0) {
+          navigate('/actual-scout-profile');
+        } else if (role === "Scout" && result.user.dashboard.length <= 0) {
+          navigate('/scouts');
+        } 
+        
+         else {
+          console.error("Invalid role selected");
+          return;
+        }
         // Optionally, redirect or perform further actions after login
 
       } catch (error) {
@@ -113,8 +119,18 @@ const Login = () => {
     }));
   };
 
+  const handleGoToHome=()=>{
+    navigate('/')
+  }
+
   return (
     <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+      <button onClick = {handleGoToHome}
+       
+       className="position-absolute top-0 end-10 m-3">
+        <i className="bi bi-arrow-left me-1"></i>
+        Back to Home
+      </button>
       <div className="card p-4 shadow-lg" style={{ width: '350px' }}>
         <h3 className="text-center mb-4">Login</h3>
         <form onSubmit={handleSubmit} className="needs-validation">
@@ -191,7 +207,9 @@ const Login = () => {
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
+        
         </form>
+        
       </div>
     </div>
   );

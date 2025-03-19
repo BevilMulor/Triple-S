@@ -4,7 +4,11 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongoose= require('mongoose');
-//const multer = require("multer");//for image file uploads
+const multer = require("multer");//for image file uploads
+
+//commit for committing sake
+const upload = multer({ dest: 'uploads/' });  // Customize destination as needed
+
 
 
 //setting up cors
@@ -26,6 +30,36 @@ app.use(
 );
 
 
+//MEDIA
+
+// Serve static files from the 'uploads' folder
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+  setHeaders: (res, filePath, stat) => {
+    const extname = path.extname(filePath).toLowerCase();
+    if (extname === '.jpg' || extname === '.jpeg' || extname === '.png') {
+      res.set('Content-Disposition', 'inline');
+      res.set('Content-Type', 'image/jpeg');  // Set appropriate MIME type
+    }
+  }
+}));
+// app.post('/media/upload', upload.single('file'), (req, res) => {
+//   if (!req.file) {
+//     return res.status(400).send({ message: 'No file uploaded' });
+//   }
+
+//   const uploaderId = req.body.uploaderId;  // Access uploader's ID
+//   const uploaderRole = req.body.uploaderRole;  // Access uploader's role
+
+//   console.log('Uploader Info:', uploaderId, uploaderRole);
+
+//   // Simulate file processing and save the file info
+//   const fileUrl = `/uploads/${req.file.filename}`;
+
+//   // Send back a response with the file URL
+//   res.status(200).json({ fileUrl });
+// });
+
+
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -33,6 +67,7 @@ var authRouter = require('../backend_Api/routes/auth');
 var talentRouter = require('../backend_Api/routes/talent');
 var coachRouter = require('./routes/coach');
 var scoutRouter = require('./routes/scouts');
+var mediaRouter = require('./routes/media');
 
 
 
@@ -55,13 +90,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth',authRouter);
 app.use('/talent',talentRouter);
 app.use('/coach',coachRouter);
 app.use('/scout', scoutRouter);
+app.use('/media', mediaRouter);
 
 
 // catch 404 and forward to error handler

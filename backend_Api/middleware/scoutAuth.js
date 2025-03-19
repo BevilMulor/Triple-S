@@ -26,7 +26,10 @@ module.exports = async function(req, res, next) {
       return res.status(400).json({ message: 'User does not exist' });
   
       }
+      
       req.user = user;
+      user.role='Scout';
+      console.log('from middleware user: ',user)
   
   
       // Call the next middleware function
