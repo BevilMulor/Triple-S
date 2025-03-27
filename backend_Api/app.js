@@ -68,6 +68,7 @@ var talentRouter = require('../backend_Api/routes/talent');
 var coachRouter = require('./routes/coach');
 var scoutRouter = require('./routes/scouts');
 var mediaRouter = require('./routes/media');
+var adminRouter = require('./routes/admin');
 
 
 
@@ -97,6 +98,7 @@ app.use('/talent',talentRouter);
 app.use('/coach',coachRouter);
 app.use('/scout', scoutRouter);
 app.use('/media', mediaRouter);
+app.use('/admin',adminRouter);
 
 
 // catch 404 and forward to error handler

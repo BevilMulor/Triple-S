@@ -7,8 +7,8 @@ import { RealAuthProvider } from './auth/realAuthContext'
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <RealAuthProvider>
-      <App/>
+     <RealAuthProvider>  {/* Wrap your App with RealAuthProvider */}
+      <App />
     </RealAuthProvider>
   </React.StrictMode>,
 )

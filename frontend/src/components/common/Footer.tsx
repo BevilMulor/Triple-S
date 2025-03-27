@@ -19,7 +19,7 @@ export const Footer: React.FC = () => {
             <ul className="list-unstyled mb-0">
               <li><a href="/about" className="text-white-50 text-decoration-none">About Us</a></li>
               <li><a href="/how-it-works" className="text-white-50 text-decoration-none">How It Works</a></li>
-              <li><a href="/success-stories" className="text-white-50 text-decoration-none">Success Stories</a></li>
+              <li><a href="/SuccessStories" className="text-white-50 text-decoration-none">Success Stories</a></li>
             </ul>
           </div>
 
