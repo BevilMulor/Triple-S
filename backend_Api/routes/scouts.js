@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const talentRequirements = require('../models/ talentRequirements');
+const talentRequirements = require('../models/talentRequirements');
 const scoutUser= require('../models/scoutUser');
 const ScoutDashboard= require('../models/scoutDashboard');
 
