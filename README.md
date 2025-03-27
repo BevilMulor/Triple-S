@@ -5,7 +5,7 @@ To access Github Repository
 ```
 https://github.com/BevilMulor/Triple-S
 ```
-Video nink for the Initial software product/solution demonstration
+Video link for the Initial software product/solution demonstration
 ```
 https://drive.google.com/file/d/1cbnf174e1LeRdVAEvI5Bzxt1ST80GSeH/view?usp=sharing
 ```
