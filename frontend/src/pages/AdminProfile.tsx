@@ -98,6 +98,10 @@ const handleDeleteProfile= async ()=>{
   navigate('/admin-dashboard');
  }
 
+ const handleGoToHome=()=>{
+  navigate('/');
+ }
+
   return (
     <div className="container-fluid p-0">
       {/* Header */}
@@ -117,6 +121,14 @@ const handleDeleteProfile= async ()=>{
                  className="btn btn-outline"
                  onClick={handleGoToDashboard}> 
                   <a className="nav-link" href="#">Dashboard</a>
+                </button>
+               
+              </li>
+              <li className="nav-item me-3">
+                <button
+                 className="btn btn-outline"
+                 onClick={handleGoToHome}> 
+                  <a className="nav-link" href="#">Home</a>
                 </button>
                
               </li>
