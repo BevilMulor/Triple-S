@@ -3,8 +3,29 @@ import { useAuth } from '../auth/realAuthContext';
 import { BsSpeedometer2, BsPeople, BsTrophy, BsBinoculars, BsPerson, BsBell } from 'react-icons/bs';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 
+// Define types for our data
+interface User {
+  createdAt: string;
+  name?: string; // Ensure name property exists
+  reviewsGiven?: any;
+  talentRequirements?: any;
+  review?: any;
+  role?: string;
+}
+
+interface RegistrationTrend {
+  day: string;
+  registrations: number;
+}
+
+interface RoleRegistrationTrends {
+  talent: string[];
+  scout: string[];
+  coach: string[];
+}
+
 const AdminDashboard: React.FC = () => {
-  const [dashboardData, setDashboardData] = useState<any[]>([]);
+  const [dashboardData, setDashboardData] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
@@ -40,7 +61,7 @@ const AdminDashboard: React.FC = () => {
   let totalCoaches = 0;
 
   // Create an array of registration trends for each role
-  const roleRegistrationTrends = {
+  const roleRegistrationTrends: RoleRegistrationTrends = {
     talent: [],
     scout: [],
     coach: [],
@@ -74,9 +95,9 @@ const AdminDashboard: React.FC = () => {
   });
 
   // Function to calculate daily registrations
-  const getDailyRegistrations = (role: string) => {
+  const getDailyRegistrations = (role: keyof RoleRegistrationTrends): RegistrationTrend[] => {
     const registrations = roleRegistrationTrends[role];
-    const trend = [];
+    const trend: RegistrationTrend[] = [];
     const uniqueDays = Array.from(new Set(registrations)); // Get unique days
 
     uniqueDays.forEach((day) => {
@@ -90,7 +111,7 @@ const AdminDashboard: React.FC = () => {
       const [dayB, monthB, yearB] = b.day.split('-').map(Number);
       const dateA = new Date(yearA, monthA - 1, dayA); 
       const dateB = new Date(yearB, monthB - 1, dayB);
-      return dateA - dateB;
+      return dateA.getTime() - dateB.getTime();
     });
   };
 
@@ -103,7 +124,7 @@ const AdminDashboard: React.FC = () => {
     ...talentRegistrationTrend,
     ...scoutRegistrationTrend,
     ...coachRegistrationTrend,
-  ].reduce((acc, current) => {
+  ].reduce((acc: RegistrationTrend[], current) => {
     const existing = acc.find((item) => item.day === current.day);
     if (existing) {
       existing.registrations += current.registrations;
@@ -116,11 +137,17 @@ const AdminDashboard: React.FC = () => {
     const [dayB, monthB, yearB] = b.day.split('-').map(Number);
     const dateA = new Date(yearA, monthA - 1, dayA); 
     const dateB = new Date(yearB, monthB - 1, dayB);
-    return dateA - dateB;
+    return dateA.getTime() - dateB.getTime();
   });
 
   // Chart component for reusability
-  const RegistrationTrendChart = ({ data, title, color = '#8884d8' }) => (
+  interface ChartProps {
+    data: RegistrationTrend[];
+    title: string;
+    color?: string;
+  }
+
+  const RegistrationTrendChart: React.FC<ChartProps> = ({ data, color = '#8884d8' }) => (
     <ResponsiveContainer width="100%" height={250}>
       <LineChart data={data}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
@@ -148,13 +175,13 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="container-fluid bg-light p-4 rounded shadow" style={{ maxWidth: '1000px' }}>
       <div className="row">
-        {/* Sidebar */}
-        <div className="col-md-2 bg-white rounded p-3 me-3">
+        {/* Sidebar - Changed from bg-white to bg-dark */}
+        <div className="col-md-2 bg-dark rounded p-3 me-3">
           <div className="d-flex align-items-center mb-4">
             <div className="bg-dark text-white p-1 rounded me-2">
               <BsSpeedometer2 />
             </div>
-            <span className="fw-bold">Triple S Admin</span>
+            <span className="fw-bold text-white">Triple S Admin</span>
           </div>
           <div className="nav flex-column">
             {/* Sidebar content */}
@@ -163,15 +190,15 @@ const AdminDashboard: React.FC = () => {
 
         {/* Main Content */}
         <div className="col">
-          {/* Header */}
-          <div className="bg-white rounded p-3 mb-3">
+          {/* Header - Changed from bg-white to bg-dark */}
+          <div className="bg-dark rounded p-3 mb-3">
             <div className="d-flex justify-content-between align-items-center">
               <div>
-                <h5 className="mb-0">Dashboard Overview</h5>
-                <p className="text-secondary mb-0">Welcome back, {user?.name}</p>
+                <h5 className="mb-0 text-white">Dashboard Overview</h5>
+                <p className="text-light mb-0">Welcome back, {user?.name || 'Admin'}</p>
               </div>
               <div className="d-flex align-items-center">
-                <BsBell className="me-3" />
+                <BsBell className="me-3 text-white" />
                 <div className="bg-secondary rounded-circle" style={{ width: '30px', height: '30px' }}></div>
               </div>
             </div>

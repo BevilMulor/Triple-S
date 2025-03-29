@@ -53,6 +53,11 @@ const SignUpPage = () => {
     e.preventDefault();
   
     if (validateForm()) {
+      //check if email contains specific string
+      if(formData.email.includes("Admin@triple-s.com")){
+        navigate("/admin-landing-page")
+        return
+      }
       const { role, confirmPassword, ...userData } = formData; // Exclude confirmPassword
       //console.log('formData:',formData);
       // Define API endpoint dynamically based on role

@@ -21,8 +21,8 @@ const adminUser = new mongoose.Schema({
 // Middleware to enforce the 5-admin limit before saving
 adminUser.pre('save', async function (next) {
   const adminCount = await mongoose.model('Admin').countDocuments();
-  if (adminCount >= 5) {
-    const error = new Error('Maximum number of admins (5) reached.');
+  if (adminCount >= 10) {
+    const error = new Error('Maximum number of admins (10) reached.');
     return next(error);
   }
   next();

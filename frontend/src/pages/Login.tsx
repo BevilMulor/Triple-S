@@ -45,6 +45,12 @@ const Login = () => {
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
 
+    //check if email contains specific string
+    if(formData.email.includes("Admin@triple-s.com")){
+      navigate("/admin-landing-page")
+      return
+    }
+
     if (validateForm()) {
       setLoading(true); // Start loading state
 

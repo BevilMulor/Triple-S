@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Bell, Calendar } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Navbar } from '../components/common/Navbar';
 import { useLocation } from 'react-router-dom';//edit
@@ -290,14 +290,14 @@ const handleSubmitEdit = async (e: React.FormEvent) => {
   return (
     <> 
       <Navbar />
-      <div className="container-fluid py-4 px-4 bg-light">
-        <div className="row mb-4">
-          <div className="col-12">
-            <div className="card shadow-sm">
+      <div className="container-fluid p-0">
+        <div className="row m-0">
+          <div className="col-12 px-0">
+            <div className="card shadow-sm bg-dark text-white" style={{ borderRadius: '0.5rem' }}>
               <div className="card-body d-flex justify-content-between align-items-center">
                 <h2 className="mb-0">Coach Dashboard</h2>
                 <div className="d-flex align-items-center">
-                  <span className="badge bg-primary me-3 px-3 py-2 rounded-pill">{discipline} Coach</span>
+                  <span className="badge bg-light text-primary me-3 px-3 py-2 rounded-pill">{discipline} Coach</span>
                   <div className="dropdown">
                     <Bell className="text-muted cursor-pointer" size={20} />
                   </div>
@@ -310,113 +310,119 @@ const handleSubmitEdit = async (e: React.FormEvent) => {
 
         {/* Conditional Rendering for Edit/Profile Form */}
         {isEditing ? (
-          <div>
-            <h2>Editing Profile</h2>
-            {profileData ? (
-              <form onSubmit={handleSubmitEdit} className="needs-validation" noValidate>
-                {showAlert && (
-                  <div className="alert alert-warning d-flex align-items-center" role="alert">
-                    <Bell className="me-2" />
-                    <div>Please complete all required fields before submitting</div>
-                  </div>
-                )}
+          <div className="row mb-4 justify-content-center">
+            <div className="col-12 col-md-8 col-lg-6">
+              <div className="card shadow-sm">
+                <div className="card-body">
+                  <h3 className="mb-4 border-bottom pb-2">Editing Profile</h3>
+                  {profileData ? (
+                    <form onSubmit={handleSubmitEdit} className="needs-validation" noValidate>
+                      {showAlert && (
+                        <div className="alert alert-warning d-flex align-items-center" role="alert">
+                          <Bell className="me-2" />
+                          <div>Please complete all required fields before submitting</div>
+                        </div>
+                      )}
 
-                {/* Name and Phone Fields */}
-                <div className="row mb-4">
-                  <div className="col-md-6">
-                    <div className="form-group">
-                      <label className="form-label">Name</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder={profileData.name}
-                        value={formData.name}
-                        onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                        required
-                      />
-                    </div>
-                  </div>
-                  <div className="col-md-6">
-                    <div className="form-group">
-                      <label className="form-label">Phone</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder={profileData.phoneNumber}
-                        value={formData.phoneNumber}
-                        onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
-                        required
-                      />
-                    </div>
-                  </div>
+                      {/* Name and Phone Fields */}
+                      <div className="row mb-4">
+                        <div className="col-md-6">
+                          <div className="form-group">
+                            <label className="form-label">Name</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder={profileData.name}
+                              value={formData.name}
+                              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                              required
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-6">
+                          <div className="form-group">
+                            <label className="form-label">Phone</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder={profileData.phoneNumber}
+                              value={formData.phoneNumber}
+                              onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Biography and Experience */}
+                      <div className="row mb-4">
+                        <div className="col-md-6">
+                          <label className="form-label">Biography</label>
+                          <input
+                            type="text"
+                            className="form-control"
+                            placeholder={profileData.biography}
+                            value={formData.biography}
+                            onChange={(e) => setFormData(prev => ({ ...prev, biography: e.target.value }))}
+                            required
+                          />
+                        </div>
+                        <div className="col-md-6">
+                          <label className="form-label">Experience Level</label>
+                          <select
+                            className="form-select"
+                            value={formData.experience}
+                            onChange={(e) => setFormData(prev => ({ ...prev, experience: e.target.value }))}
+                            required
+                          >
+                            <option value="">{profileData.experience || "Select Experience Level"}</option>
+                            {experienceLevels.map((level) => (
+                              <option key={level} value={level}>{level}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      {/* Upload Media */}
+                      <div className="mb-4">
+                        <label className="form-label">Upload Media</label>
+                        <input
+                          type="file"
+                          className="form-control"
+                          onChange={handleFileChange}
+                          accept="image/*, video/*"
+                        />
+                      </div>
+
+                      {/* Media Preview */}
+                      {formData.mediaContent.url || profileData.mediaContent?.url ? (
+                        <div className="mt-3">
+                          {formData.mediaContent.fileType?.startsWith("image/") || profileData.mediaContent?.fileType?.startsWith("image/") ? (
+                            <img
+                              src={formData.mediaContent.url || profileData.mediaContent.url}
+                              alt="Preview"
+                              className="img-thumbnail"
+                              style={{ maxWidth: "200px" }}
+                            />
+                          ) : (
+                            <video controls width="200">
+                              <source src={formData.mediaContent.url || profileData.mediaContent.url} type={formData.mediaContent.fileType || profileData.mediaContent.fileType} />
+                              Your browser does not support the video tag.
+                            </video>
+                          )}
+                        </div>
+                      ) : null}
+
+                      <button type="submit" className="btn btn-primary w-100">
+                        Update Profile
+                      </button>
+                    </form>
+                  ) : (
+                    <p>Loading user data...</p> 
+                  )}
                 </div>
-
-                {/* Biography and Experience */}
-                <div className="row mb-4">
-                  <div className="col-md-6">
-                    <label className="form-label">Biography</label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder={profileData.biography}
-                      value={formData.biography}
-                      onChange={(e) => setFormData(prev => ({ ...prev, biography: e.target.value }))}
-                      required
-                    />
-                  </div>
-                  <div className="col-md-6">
-                    <label className="form-label">Experience Level</label>
-                    <select
-                      className="form-select"
-                      value={formData.experience}
-                      onChange={(e) => setFormData(prev => ({ ...prev, experience: e.target.value }))}
-                      required
-                    >
-                      <option value="">{profileData.experience || "Select Experience Level"}</option>
-                      {experienceLevels.map((level) => (
-                        <option key={level} value={level}>{level}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                {/* Upload Media */}
-                <div className="mb-4">
-                  <label className="form-label">Upload Media</label>
-                  <input
-                    type="file"
-                    className="form-control"
-                    onChange={handleFileChange}
-                    accept="image/*, video/*"
-                  />
-                </div>
-
-                {/* Media Preview */}
-                {formData.mediaContent.url || profileData.mediaContent?.url ? (
-                  <div className="mt-3">
-                    {formData.mediaContent.fileType?.startsWith("image/") || profileData.mediaContent?.fileType?.startsWith("image/") ? (
-                      <img
-                        src={formData.mediaContent.url || profileData.mediaContent.url}
-                        alt="Preview"
-                        className="img-thumbnail"
-                        style={{ maxWidth: "200px" }}
-                      />
-                    ) : (
-                      <video controls width="200">
-                        <source src={formData.mediaContent.url || profileData.mediaContent.url} type={formData.mediaContent.fileType || profileData.mediaContent.fileType} />
-                        Your browser does not support the video tag.
-                      </video>
-                    )}
-                  </div>
-                ) : null}
-
-                <button type="submit" className="btn btn-primary w-100">
-                  Update Profile
-                </button>
-              </form>
-            ) : (
-              <p>Loading user data...</p> 
-            )}
+              </div>
+            </div>
           </div>
         ) : (
           <div className="row mb-4 justify-content-center">

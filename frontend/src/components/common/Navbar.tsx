@@ -64,7 +64,7 @@ export const Navbar: React.FC = () => {
         <div className="d-flex">
           <Link to="/login" className="btn btn-outline-primary me-2">Login</Link>
           <Link to="/signup" className="btn btn-primary">Sign Up</Link>
-          <Link to="/admin-landing-page" className="btn btn-dark">Admin</Link>
+          {/* <Link to="/admin-landing-page" className="btn btn-dark">Admin</Link> */}
         </div>
       </div>
     </nav>

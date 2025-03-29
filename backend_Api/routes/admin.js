@@ -73,7 +73,7 @@ router.post('/register', async (req, res) => {
     }
 
     const adminCount = await AdminUser.countDocuments();
-    if (adminCount >= 5) {
+    if (adminCount >= 10) {
       return res.status(403).json({ message: "Maximum of 5 admins reached." });
     }
     
