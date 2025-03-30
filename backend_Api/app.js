@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongoose= require('mongoose');
 const multer = require("multer");//for image file uploads
+require('dotenv').config(); // Load environment variables
+
 
 //commit for committing sake
 const upload = multer({ dest: 'uploads/' });  // Customize destination as needed
@@ -81,7 +83,7 @@ var adminRouter = require('./routes/admin');
 
 
 
-mongoose.connect('mongodb+srv://bmulor:zdW0MvDIPKrtQAk4@cluster0.bjrur.mongodb.net/')
+mongoose.connect(process.env.MONGODB_URI)
  .then(()=>{console.log('Connected to the database')})
  .catch((error)=>{ console.log(error)});
 
