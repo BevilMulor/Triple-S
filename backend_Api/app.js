@@ -8,6 +8,16 @@ const multer = require("multer");//for image file uploads
 require('dotenv').config(); // Load environment variables
 
 
+//require('dotenv').config();
+//const mongoose = require('mongoose');
+
+console.log('Testing Mongo URI:', process.env.MONGO_URI);
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB Connection Successful'))
+  .catch(err => console.error('MongoDB Connection Error:', err));
+
+
 //commit for committing sake
 const upload = multer({ dest: 'uploads/' });  // Customize destination as needed
 
@@ -82,10 +92,6 @@ var mediaRouter = require('./routes/media');
 var adminRouter = require('./routes/admin');
 
 
-console.log('mongo uri: ', process.env.MONGO_URI)
-mongoose.connect(process.env.MONGO_URI)//for connecting to the database
- .then(()=>{console.log('Connected to the database')})
- .catch((error)=>{ console.log(error)});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

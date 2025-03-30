@@ -13,10 +13,6 @@ const coachUser = require('../models/coachUser');
 const scoutUser = require('../models/scoutUser');
 
 
-//connect to mongoDB
-mongoose.connect(process.env.MONGODB_URI)
-.then(() => console.log("Connected to MongoDB"))
-.catch(err => console.log("error connecting to the db", err))
 
 
 
