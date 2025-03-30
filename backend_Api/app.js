@@ -83,7 +83,7 @@ var adminRouter = require('./routes/admin');
 
 
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose.connect(process.env.MONGODB_URI)//for connecting to the database using variable from env
  .then(()=>{console.log('Connected to the database')})
  .catch((error)=>{ console.log(error)});
 
