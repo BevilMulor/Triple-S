@@ -21,13 +21,22 @@ const cors = require("cors");  //allows all origins. simple but dangerous
 // app.use(cors()); // Enable CORS for all requests
 
 // Allow CORS for all routes (General Configuration)
-app.use(
-  cors({
-    origin: "*", // Allow all origins for public endpoints
-    methods: "GET, POST, PUT, DELETE",
-    allowedHeaders: ["Content-Type", "Authorization"], // Allow JWT headers
-  })
-);
+// app.use(
+//   cors({
+//     origin: "*", // Allow all origins for public endpoints
+//     methods: "GET, POST, PUT, DELETE",
+//     allowedHeaders: ["Content-Type", "Authorization"], // Allow JWT headers
+//   })
+// );
+
+//for the sake of vercel amd custom servers
+//CORS Setup
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Allow specific methods
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow specific headers
+  res.setHeader('Access-Control-Allow-Credentials', 'true'); // Allow credentials (cookies, authorization headers, etc.)
+})
 
 
 //MEDIA
