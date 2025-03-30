@@ -11,7 +11,7 @@ const Features: React.FC = () => {
           <div className="col-md-4">
             <Link to="/talents" className="text-decoration-none">
               <div className="card h-100 border-0 shadow-sm feature-card">
-                <div className="card-body p-4">
+                <div className="card-body p-4 feature-card-bg">
                   <div className="feature-icon mb-3">
                     <i className="bi bi-person-circle fs-2"></i>
                   </div>
@@ -31,7 +31,7 @@ const Features: React.FC = () => {
           <div className="col-md-4">
             <Link to="/coaches" className="text-decoration-none">
               <div className="card h-100 border-0 shadow-sm feature-card">
-                <div className="card-body p-4">
+                <div className="card-body p-4 feature-card-bg">
                   <div className="feature-icon mb-3">
                     <i className="bi bi-clipboard-data fs-2"></i>
                   </div>
@@ -51,7 +51,7 @@ const Features: React.FC = () => {
           <div className="col-md-4">
             <Link to="/scouts" className="text-decoration-none">
               <div className="card h-100 border-0 shadow-sm feature-card">
-                <div className="card-body p-4">
+                <div className="card-body p-4 feature-card-bg">
                   <div className="feature-icon mb-3">
                     <i className="bi bi-search fs-2"></i>
                   </div>

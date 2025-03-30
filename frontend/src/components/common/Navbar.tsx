@@ -32,16 +32,16 @@ export const Navbar: React.FC = () => {
         <div className="collapse navbar-collapse justify-content-center" id="navbarNav">
           <ul className="navbar-nav">
             <li className="nav-item px-3">
-              <Link className="nav-link" to="/">Home</Link>
+              <Link className="nav-link" to="/" style={{ transition: 'font-weight 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.fontWeight = 'bold'} onMouseLeave={(e) => e.currentTarget.style.fontWeight = 'normal'}>Home</Link>
             </li>
             <li className="nav-item px-3">
-              <Link className="nav-link" to="/talents">Talents</Link>
+              <Link className="nav-link" to="/talents" style={{ transition: 'font-weight 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.fontWeight = 'bold'} onMouseLeave={(e) => e.currentTarget.style.fontWeight = 'normal'}>Talents</Link>
             </li>
             <li className="nav-item px-3">
-              <Link className="nav-link" to="/coaches">Coaches</Link>
+              <Link className="nav-link" to="/coaches" style={{ transition: 'font-weight 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.fontWeight = 'bold'} onMouseLeave={(e) => e.currentTarget.style.fontWeight = 'normal'}>Coaches</Link>
             </li>
             <li className="nav-item px-3">
-              <Link className="nav-link" to="/scouts">Scouts</Link>
+              <Link className="nav-link" to="/scouts" style={{ transition: 'font-weight 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.fontWeight = 'bold'} onMouseLeave={(e) => e.currentTarget.style.fontWeight = 'normal'}>Scouts</Link>
             </li>
             
             {isLoggedIn && (

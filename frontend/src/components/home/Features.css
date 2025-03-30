@@ -6,3 +6,7 @@
   transform: scale(1.05);
   box-shadow: 0 0 15px rgba(0, 123, 255, 0.5); /* Blue shadow effect */
 }
+
+.feature-card-bg {
+  background-color: #f5f5f5; /* Dark white / light gray background */
+}
