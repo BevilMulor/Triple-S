@@ -72,8 +72,8 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var authRouter = require('.../routes/auth');
-var talentRouter = require('.../routes/talent');
+var authRouter = require('./routes/auth');
+var talentRouter = require('./routes/talent');
 var coachRouter = require('./routes/coach');
 var scoutRouter = require('./routes/scouts');
 var mediaRouter = require('./routes/media');
