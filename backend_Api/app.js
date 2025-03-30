@@ -82,15 +82,15 @@ var mediaRouter = require('./routes/media');
 var adminRouter = require('./routes/admin');
 
 
-
-mongoose.connect(process.env.MONGO_URI)//for connecting to the database using variable from env
+console.log('mongo uri: ', process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)//for connecting to the database
  .then(()=>{console.log('Connected to the database')})
  .catch((error)=>{ console.log(error)});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-s
+
 
 // pass: zdW0MvDIPKrtQAk4
 // username: bmulor
