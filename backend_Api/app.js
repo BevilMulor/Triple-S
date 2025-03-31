@@ -13,13 +13,11 @@ require('dotenv').config(); // Load environment variables
 
 console.log('Testing Mongo URI:', process.env.MONGO_URI);
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB Connection Successful'))
-  .catch(err => console.error('MongoDB Connection Error:', err));
+// mongoose.connect(process.env.MONGO_URI)
+//   .then(() => console.log('MongoDB Connection Successful'))
+//   .catch(err => console.error('MongoDB Connection Error:', err));
 
 
-//commit for committing sake
-const upload = multer({ dest: 'uploads/',  limits: { fileSize: 10 * 1024 * 1024 } /* 10MB file limit*/  });  // Customize destination as needed
 
 
 
@@ -43,26 +41,24 @@ const cors = require("cors");  //allows all origins. simple but dangerous
 
 //for the sake of vercel amd custom servers
 //CORS Setup
-app.use((req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Allow specific methods
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow specific headers
-  res.setHeader('Access-Control-Allow-Credentials', 'true'); // Allow credentials (cookies, authorization headers, etc.)
-})
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', '*'); // Allow all origins
+//   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS'); // Allow specific methods
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // Allow specific headers
+//   res.setHeader('Access-Control-Allow-Credentials', 'true'); // Allow credentials (cookies, authorization headers, etc.)
+// })
+app.use(
+  cors({
+    origin: "*", // Allow all origins for public endpoints
+    methods: "GET, POST, PUT, DELETE",
+    allowedHeaders: ["Content-Type", "Authorization"], // Allow JWT headers
+  })
+);
 
 
 //MEDIA
 
-// Serve static files from the 'uploads' folder
-app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
-  setHeaders: (res, filePath, stat) => {
-    const extname = path.extname(filePath).toLowerCase();
-    if (extname === '.jpg' || extname === '.jpeg' || extname === '.png') {
-      res.set('Content-Disposition', 'inline');
-      res.set('Content-Type', 'image/jpeg');  // Set appropriate MIME type
-    }
-  }
-}));
+
 // app.post('/media/upload', upload.single('file'), (req, res) => {
 //   if (!req.file) {
 //     return res.status(400).send({ message: 'No file uploaded' });
@@ -80,9 +76,13 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
 //   res.status(200).json({ fileUrl });
 // });
 
+app.get('/', (req, res) => {
+  console.log('Request received at root');
+  res.send('Hello World, this is Triple-s backend API!');
+});
 
 
-var indexRouter = require('./routes/index');
+//var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var authRouter = require('./routes/auth');
 var talentRouter = require('./routes/talent');
@@ -102,14 +102,13 @@ app.set('view engine', 'pug');
 // username: bmulor
 //const uri = "mongodb+srv://bmulor:zdW0MvDIPKrtQAk4@cluster0.bjrur.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
-//URI: mongodb+srv://bmulor:zdW0MvDIPKrtQAk4@cluster0.bjrur.mongodb.net/
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use('/', indexRouter);
+//app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/auth',authRouter);
 app.use('/talent',talentRouter);
@@ -118,6 +117,20 @@ app.use('/scout', scoutRouter);
 app.use('/media', mediaRouter);
 app.use('/admin',adminRouter);
 
+
+//commit for committing sake
+const upload = multer({ dest: 'uploads/',  limits: { fileSize: 10 * 1024 * 1024 } /* 10MB file limit*/  });  // Customize destination as needed
+
+// Serve static files from the 'uploads' folder
+app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
+  setHeaders: (res, filePath, stat) => {
+    const extname = path.extname(filePath).toLowerCase();
+    if (extname === '.jpg' || extname === '.jpeg' || extname === '.png') {
+      res.set('Content-Disposition', 'inline');
+      res.set('Content-Type', 'image/jpeg');  // Set appropriate MIME type
+    }
+  }
+}));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

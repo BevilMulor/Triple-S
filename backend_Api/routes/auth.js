@@ -13,6 +13,13 @@ const coachUser = require('../models/coachUser');
 const scoutUser = require('../models/scoutUser');
 
 
+console.time("MongoDB Connection Time");
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => {
+    console.timeEnd("MongoDB Connection Time");
+    console.log("MongoDB Connected!");
+  })
+  .catch(err => console.error("MongoDB Connection Failed:", err));
 
 
 
