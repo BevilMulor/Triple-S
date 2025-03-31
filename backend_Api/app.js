@@ -119,7 +119,7 @@ app.use('/admin',adminRouter);
 
 
 //commit for committing sake
-const upload = multer({ dest: 'uploads/',  limits: { fileSize: 10 * 1024 * 1024 } /* 10MB file limit*/  });  // Customize destination as needed
+const upload = multer({ dest: 'uploads/'});;  // Customize destination as needed
 
 // Serve static files from the 'uploads' folder
 app.use('/uploads', express.static(path.join(__dirname, 'uploads'), {
