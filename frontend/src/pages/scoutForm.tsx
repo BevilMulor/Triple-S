@@ -5,6 +5,7 @@ import { Navbar } from '../components/common/Navbar';
 import { useLocation } from 'react-router-dom';//edit
 import { useNavigate } from 'react-router-dom'; // For redirection
 import { useAuth } from '../auth/realAuthContext'; //for accessing possible logged in user
+import { useApiUrl } from '../apiurl/ApiContext';
 
 const  ScoutForm=( )=>{
 
@@ -20,6 +21,7 @@ const  ScoutForm=( )=>{
   const isEditing = location.state?.isEditing || false; // Default to false if not passed
   //const userId = location.state?.userId || null;
   const profileId = location.state?.profileId || null;
+  const apiUrl = useApiUrl(); // Get the API URL from context
 
   console.log("Editing state:", isEditing);
   //console.log("User ID:", userId);
@@ -36,7 +38,7 @@ const  ScoutForm=( )=>{
     }
     try {
       
-    const response = await fetch(`http://localhost:3000/scout/getScoutProfile/${profileId}`, {
+    const response = await fetch(`${apiUrl}/scout/getScoutProfile/${profileId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -83,7 +85,7 @@ useEffect(() => {
     const token = localStorage.getItem('authToken'); // Retrieve the token
     if (!token) return;
 
-    fetch('http://localhost:3000/scout/getProfile', {
+    fetch(`${apiUrl}/scout/getProfile`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -169,7 +171,7 @@ useEffect(() => {
   
     try {
       // Use the form data from state, including fileUrl
-      const response = await fetch('http://localhost:3000/scout/createProfile', {
+      const response = await fetch(`${apiUrl}/scout/createProfile`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -209,7 +211,7 @@ const handleSubmitEdit = async (e: React.FormEvent) => {
   
     try {
       // Use the form data from state, including fileUrl
-      const response = await fetch('http://localhost:3000/scout/EditProfile', {
+      const response = await fetch(`${apiUrl}/scout/EditProfile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -254,7 +256,7 @@ const handleSubmitEdit = async (e: React.FormEvent) => {
       fileData.append('uploaderRole', 'Coach');
   
       // Send the file along with uploader info in the POST request
-      fetch('http://localhost:3000/media/upload', {
+      fetch(`${apiUrl}/media/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`,

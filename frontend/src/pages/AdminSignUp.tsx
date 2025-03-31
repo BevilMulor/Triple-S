@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';//redirecting user
+import { useApiUrl } from '../apiurl/ApiContext'; // Import the API URL context
 
 const AdminSignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const AdminSignUpPage = () => {
    
   });
   const navigate = useNavigate()//initialise navigate
+  const apiUrl = useApiUrl(); // Get the API URL from context
   
   const [errors, setErrors] = useState<{ email?: string; password?: string; confirmPassword?: string; role?: string; discipline?: string }>({});
 
@@ -51,7 +53,7 @@ const AdminSignUpPage = () => {
       const {  confirmPassword, ...userData } = formData; // Exclude confirmPassword
       //console.log('formData:',formData);
       // Define API endpoint dynamically based on role
-      let adminRegUrl="http://www.localhost:3000/admin/register"; // Ensure this is correctly formatted
+      let adminRegUrl=`${apiUrl}/admin/register`; // Ensure this is correctly formatted
     
 
      console.log('userData that is being posted: ',userData);

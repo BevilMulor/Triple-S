@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { Video, Pen } from 'lucide-react';
 import { Modal } from 'react-bootstrap';
+import { useApiUrl } from '../apiurl/ApiContext';
 
 const positionsByDiscipline = {
   Football: ['Goalkeeper', 'Defense', 'Midfield', 'Striker'],
@@ -58,6 +59,7 @@ const OpenTalentProfile = () => {
   
   const skillLabels = getSkillLabels();
   const scoutDiscipline=user?.discipline;
+   const contextApiUrl = useApiUrl(); // Get the API URL from context
 
   useEffect(() => {
     const token = localStorage.getItem('authToken'); // Retrieve the token
@@ -70,10 +72,10 @@ const OpenTalentProfile = () => {
     console.log('token',token)
     let apiUrl
     if(user.role==="Coach"){
-      apiUrl=`http://localhost:3000/talent/getOpenTalentProfile/${id}`
+      apiUrl=`${contextApiUrl}/talent/getOpenTalentProfile/${id}`
     }
     if(user.role==="Scout"){
-      apiUrl=`http://localhost:3000/talent/getOpenTalentProfile2/${id}`
+      apiUrl=`${contextApiUrl}/talent/getOpenTalentProfile2/${id}`
     }
     fetch(apiUrl, {
       method: 'GET',
@@ -127,7 +129,7 @@ const OpenTalentProfile = () => {
       const coachId = user ? user._id : '';  // Replace with actual coachId from your user context
   
       // If the selectedTalent is just the dashboard ID, retrieve the corresponding TalentUser
-      const response = await fetch(`http://localhost:3000/coach/getTalentByDashboardId/${selectedTalent}`, {
+      const response = await fetch(`${contextApiUrl}/coach/getTalentByDashboardId/${selectedTalent}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -145,7 +147,7 @@ const OpenTalentProfile = () => {
       const talentUserId = talentData._id; // Get the TalentUser ID from the response
   
       // Make the POST request to submit the  coach review
-      const reviewResponse = await fetch('http://localhost:3000/coach/submitReview2', {
+      const reviewResponse = await fetch(`${contextApiUrl}/coach/submitReview2`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

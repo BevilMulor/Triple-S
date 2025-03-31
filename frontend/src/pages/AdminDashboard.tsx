@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../auth/realAuthContext';
 import { BsSpeedometer2, BsPeople, BsTrophy, BsBinoculars, BsPerson, BsBell } from 'react-icons/bs';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { useApiUrl } from '../apiurl/ApiContext';
 
 // Define types for our data
 interface User {
@@ -29,10 +30,13 @@ const AdminDashboard: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
+  const apiUrl = useApiUrl(); // Get the API URL from context
+
   useEffect(() => {
+    console.log('apiUrl:', apiUrl); // Log the API URL to check if it's correct
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3000/admin/dashboard-data');
+        const response = await fetch(`${apiUrl}/admin/dashboard-data`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }

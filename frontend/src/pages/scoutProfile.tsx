@@ -7,6 +7,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { Video, Pen } from 'lucide-react';
 import { Modal } from 'react-bootstrap';
+import { useApiUrl } from '../apiurl/ApiContext';
 
 interface ScoutProfileProps {
   name?: string;
@@ -43,7 +44,7 @@ const ScoutProfile: React.FC<ScoutProfileProps> = ()  => {    // Functions to ha
   const handleEditProfile = (userId:any, profileId:any) => {
     navigate('/scouts', { state: { isEditing: true, userId, profileId } }); 
 };
-
+const apiUrl = useApiUrl(); // Get the API URL from context
 
 
 
@@ -60,7 +61,7 @@ const handleDeleteProfile = async () => {
     }
   
     try {
-      const response = await fetch(`http://localhost:3000/scout/deleteProfile`, {
+      const response = await fetch(`${apiUrl}/scout/deleteProfile`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -96,7 +97,7 @@ const handleDeleteProfile = async () => {
     }
 
     
-    const endpoint ='http://localhost:3000/scout/getProfile'
+    const endpoint =`${apiUrl}/scout/getProfile`
 
     fetch(endpoint, {
       method: 'GET',

@@ -6,6 +6,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { Video, Pen } from 'lucide-react';
 import { Modal } from 'react-bootstrap';
+import { useApiUrl } from '../apiurl/ApiContext';
 
 // Define interfaces for the data structures
 interface Media {
@@ -68,6 +69,8 @@ const TalentProfile = () => {
     setEdit(true);
     navigate('/talents', { state: { isEditing: true, userId, profileId } }); 
 };
+
+const apiUrl = useApiUrl(); // Get the API URL from context
 //function to delete profile
  // Function to handle navigation to the Talents page
  const handleDeleteProfile = async () => {
@@ -82,7 +85,7 @@ const TalentProfile = () => {
   }
 
   try {
-    const response = await fetch(`http://localhost:3000/talent/deleteProfile`, {
+    const response = await fetch(`${apiUrl}/talent/deleteProfile`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -132,7 +135,7 @@ const TalentProfile = () => {
     // const endpoint = id
     //   ? `http://localhost:3000/talent/getProfileById/${id}`
     //   : 'http://localhost:3000/talent/getProfile';
-    const endpoint ='http://localhost:3000/talent/getProfile'
+    const endpoint =`${apiUrl}/talent/getProfile`
 
     fetch(endpoint, {
       method: 'GET',
@@ -162,7 +165,7 @@ const TalentProfile = () => {
   useEffect(() => {
     const fetchRequirements = async () => {
       try {
-        const response = await fetch("http://localhost:3000/scout/getRequirements");
+        const response = await fetch(`${apiUrl}/scout/getRequirements`);
         if (!response.ok) {
           throw new Error("Failed to fetch requirements");
         }

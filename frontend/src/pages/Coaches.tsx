@@ -4,6 +4,7 @@ import { Navbar } from '../components/common/Navbar';
 import { useAuth } from '../auth/realAuthContext';
 import { Link } from 'react-router-dom'; // Import Link and useNavigate for routing
 import { useNavigate } from 'react-router-dom';
+import { useApiUrl } from '../apiurl/ApiContext';
 
 interface Media {
   fileUrl: string;
@@ -23,6 +24,7 @@ const CoachDashboard = () => {
   
   // State for the coach's discipline (pulled from auth/profile)
   const navigate= useNavigate();
+  const apiUrl = useApiUrl(); // Get the API URL from context
   //const [coachDiscipline] = useState('Football');
   const [coachDiscipline, setCoachDiscipline] = useState('Coach'); // Default to generic "Coach"
   const [selectedTalent, setSelectedTalent] = useState('');
@@ -111,7 +113,7 @@ const CoachDashboard = () => {
     const fetchTalents = async () => {
       try {
         // Make the GET request to fetch talents from the backend
-        const response = await fetch('http://localhost:3000/talent/getTalents');
+        const response = await fetch(`${apiUrl}/talent/getTalents`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch talents');
@@ -177,7 +179,7 @@ const CoachDashboard = () => {
       // Assuming the coachId is stored in the token or auth context
       const coachId = user ? user._id : '';  // Replace with actual coachId from your user context
   
-      const response = await fetch('http://localhost:3000/coach/submitReview', {
+      const response = await fetch(`${apiUrl}/coach/submitReview`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

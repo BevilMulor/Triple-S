@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { useAuth } from '../auth/realAuthContext'; // Import the useAuth hook
 import { useNavigate } from 'react-router-dom';//redirecting user
-
+import { useApiUrl } from '../apiurl/ApiContext';
 const AdminLogin = () => {
   const [formData, setFormData] = useState({
     email: '',
@@ -12,6 +12,7 @@ const AdminLogin = () => {
 
   const [errors, setErrors] = useState<{ email?: string; password?: string; }>({});
   const [loading, setLoading] = useState(false);
+  const apiUrl = useApiUrl(); // Get the API URL from context
 
   
 
@@ -46,7 +47,7 @@ const AdminLogin = () => {
 
       const { email, password,  } = formData;
 
-      let adminLoginUrl = "http://www.localhost:3000/admin/login"; // Ensure this is correctly formatted
+      let adminLoginUrl = `${apiUrl}/admin/login`; // Ensure this is correctly formatted
      
 
       try {

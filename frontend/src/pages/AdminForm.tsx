@@ -5,6 +5,7 @@ import { Navbar } from '../components/common/Navbar';
 import { useLocation } from 'react-router-dom';//edit
 import { useNavigate } from 'react-router-dom'; // For redirection
 import { useAuth } from '../auth/realAuthContext'; //for accessing possible logged in user
+import { useApiUrl } from '../apiurl/ApiContext';
 
 const  AdminForm=( )=>{
 
@@ -23,6 +24,7 @@ const  AdminForm=( )=>{
   //console.log("User ID:", userId);
   console.log("Profile ID:", userId);
   const [profileData, setProfileData] = useState<any>(null); // Store profile data here
+  const apiUrl = useApiUrl(); // Get the API URL from context
   
 
   //edit route
@@ -34,7 +36,7 @@ const  AdminForm=( )=>{
     }
     try {
       
-    const response = await fetch(`http://localhost:3000/admin/getAdminProfile`, {
+    const response = await fetch(`${apiUrl}/admin/getAdminProfile`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -79,7 +81,7 @@ useEffect(() => {
     const token = localStorage.getItem('authToken'); // Retrieve the token
     if (!token) return;
 
-    fetch('http://localhost:3000/admin/getAdminProfile', {
+    fetch(`${apiUrl}/admin/getAdminProfile`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -162,7 +164,7 @@ useEffect(() => {
   
     try {
       // Use the form data from state, including fileUrl
-      const response = await fetch('http://localhost:3000/admin/createAdminProfile', {
+      const response = await fetch(`${apiUrl}/admin/createAdminProfile`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -202,7 +204,7 @@ const handleSubmitEdit = async (e: React.FormEvent) => {
   
     try {
       // Use the form data from state, including fileUrl
-      const response = await fetch('http://localhost:3000/admin/updateProfile', {
+      const response = await fetch(`${apiUrl}/admin/updateProfile`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -247,7 +249,7 @@ const handleSubmitEdit = async (e: React.FormEvent) => {
       fileData.append('uploaderRole', 'Admin');
   
       // Send the file along with uploader info in the POST request
-      fetch('http://localhost:3000/media/upload', {
+      fetch(`${apiUrl}/media/upload`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`,

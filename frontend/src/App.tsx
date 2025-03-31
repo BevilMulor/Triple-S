@@ -31,6 +31,7 @@ import AdminLogin from './pages/AdminLogin';
 import AdminProfile from './pages/AdminProfile';
 import AdminDashboard from './pages/AdminDashboard';
 import AdminForm from './pages/AdminForm';
+import { ApiProvider } from './apiurl/ApiContext';
 
 
 const App: React.FC = () => {
@@ -40,6 +41,9 @@ const App: React.FC = () => {
   return (
     <RealAuthProvider>
       <ErrorBoundary>
+        <ApiProvider>
+          {/* <Navbar /> */}
+          {/* Add your Navbar component here */}
         <Router>
           <Routes>
             <Route path="/" element={<Dashboard />} />
@@ -120,6 +124,7 @@ const App: React.FC = () => {
             <Route path="/coach-profile/:id" element={<CoachProfile />} />
           </Routes>
         </Router>
+        </ApiProvider>
       </ErrorBoundary>
     </RealAuthProvider>
   );

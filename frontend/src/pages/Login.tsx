@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { useAuth } from '../auth/realAuthContext'; // Import the useAuth hook
 import { useNavigate } from 'react-router-dom';//redirecting user
+import { useApiUrl } from '../apiurl/ApiContext'; // Import the API URL context
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,7 @@ const Login = () => {
 
   const [errors, setErrors] = useState<{ email?: string; password?: string; role?: string }>({});
   const [loading, setLoading] = useState(false);
+  //const apiUrl = useApiUrl(); // Get the API URL from context
 
   const roles = ['Talent', 'Coach', 'Scout'];
 
@@ -56,7 +58,7 @@ const Login = () => {
 
       const { email, password, role } = formData;
 
-      let apiUrl = "http://www.localhost:3000"; // Ensure this is correctly formatted
+      let apiUrl= useApiUrl(); // Ensure this is correctly formatted
       if (role === "Talent") {
         apiUrl += "/auth/talentLogin";
       } else if (role === "Coach") {

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';//redirecting user
+import { useApiUrl } from '../apiurl/ApiContext'; // Import the API URL context
 
 const SignUpPage = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +17,7 @@ const SignUpPage = () => {
 
   const roles = ['Talent', 'Coach', 'Scout'];
   const disciplines = ['Football', 'Basketball', 'Art'];
+   var apiUrl = useApiUrl(); // Get the API URL from context
 
   const validateForm = () => {
     ;
@@ -61,7 +63,7 @@ const SignUpPage = () => {
       const { role, confirmPassword, ...userData } = formData; // Exclude confirmPassword
       //console.log('formData:',formData);
       // Define API endpoint dynamically based on role
-      let apiUrl = "http://www.localhost:3000"; // Ensure this is correctly formatted
+     // let apiUrl = "http://www.localhost:3000"; // Ensure this is correctly formatted
       if (role === "Talent") {
         apiUrl += "/auth/talentRegister";
       } else if (role === "Coach") {

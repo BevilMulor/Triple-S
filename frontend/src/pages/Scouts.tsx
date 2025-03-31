@@ -5,6 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Navbar } from '../components/common/Navbar';
 import { useAuth } from '../auth/realAuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useApiUrl } from '../apiurl/ApiContext';
 
 // Define proper types for discipline
 type Discipline = 'Football' | 'Basketball' | 'Art';
@@ -65,12 +66,13 @@ const ScoutDashboard = () => {
   });
    const [discipline, setDiscipline] = useState<Discipline>('Football'); // Default value
   const [talents, setTalents] = useState<Talent[]>([]);
+  const apiUrl = useApiUrl(); // Get the API URL from context 
 
   // Fetch talents when the component mounts
   useEffect(() => {
     const fetchTalents = async () => {
       try {
-        const response = await fetch('http://localhost:3000/talent/getTalents');
+        const response = await fetch(`${apiUrl}/talent/getTalents`);
         
         if (!response.ok) {
           throw new Error('Failed to fetch talents');
@@ -126,7 +128,7 @@ const ScoutDashboard = () => {
       }
       
       // Send the data to the backend API
-      const response = await fetch('http://localhost:3000/scout/submitRequirements', {
+      const response = await fetch(`${apiUrl}/scout/submitRequirements`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

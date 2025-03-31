@@ -6,6 +6,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from 'react-bootstrap';
 import { Video, Pen } from 'lucide-react';
 import { Modal } from 'react-bootstrap';
+import { useApiUrl } from '../apiurl/ApiContext';
 
 interface Media {
     fileUrl: string;
@@ -40,6 +41,7 @@ const CoachProfile =()=> {
    const [error, setError] = useState<string | null>(null);
    const [edit,setEdit]=useState(Boolean)
    const [reviewedTalent,setReviewedTalent]=useState([]);
+   const apiUrl = useApiUrl(); // Get the API URL from context
 
    // Functions to handle modal open/close
   const handleCloseModal = () => setShowMediaModal(false);
@@ -67,7 +69,7 @@ const handleDeleteProfile = async () => {
     }
   
     try {
-      const response = await fetch(`http://localhost:3000/coach/deleteProfile`, {
+      const response = await fetch(`${apiUrl}/coach/deleteProfile`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +105,7 @@ const handleDeleteProfile = async () => {
     }
 
     
-    const endpoint ='http://localhost:3000/coach/getProfile'
+    const endpoint =`${apiUrl}/coach/getProfile`
 
     fetch(endpoint, {
       method: 'GET',
