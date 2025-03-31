@@ -19,7 +19,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 
 //commit for committing sake
-const upload = multer({ dest: 'uploads/' });  // Customize destination as needed
+const upload = multer({ dest: 'uploads/',  limits: { fileSize: 10 * 1024 * 1024 } /* 10MB file limit*/  });  // Customize destination as needed
 
 
 
@@ -100,6 +100,7 @@ app.set('view engine', 'pug');
 
 // pass: zdW0MvDIPKrtQAk4
 // username: bmulor
+//const uri = "mongodb+srv://bmulor:zdW0MvDIPKrtQAk4@cluster0.bjrur.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 //URI: mongodb+srv://bmulor:zdW0MvDIPKrtQAk4@cluster0.bjrur.mongodb.net/
 
