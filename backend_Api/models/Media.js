@@ -16,7 +16,7 @@ const mediaSchema = new mongoose.Schema({
         userType: { 
             type: String, 
             required: true, 
-            enum: ['Coach', 'Talent', 'Scout'] 
+            enum: ['Coach', 'Talent', 'Scout', 'Admin']
         }
     }
 });
