@@ -449,8 +449,8 @@ const apiUrl = useApiUrl(); // Get the API URL from context
                     <li key={req._id} className="list-group-item">
                       <strong>Position:</strong> {req.position} <br />
                       <strong>Requirements:</strong> {req.requirements} <br />
-                      <strong>Scout Name:</strong> {req.scout?.name || "Unknown"} <br />
-                      <strong>Scout Email:</strong>
+                      <strong>Scout Name:</strong> {req.scout?.dashboard[0]?.name || "Unknown"} <br />
+                      <strong>Scout Email:</strong> {req.scout?.email || "Not provided"} <br />
                     </li>
                   ))}
                 </ul>
