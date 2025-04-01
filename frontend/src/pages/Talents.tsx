@@ -407,13 +407,7 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   };
   
   
-  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
-    setFormData(prev => ({
-      ...prev,
-      phoneNumber: prev.phoneNumber.startsWith('+') ? prev.phoneNumber.split(' ')[0] + ' ' + inputValue : inputValue,
-    }));
-  };
+  
   
   // Reset position when discipline changes
   useEffect(() => {
@@ -489,8 +483,8 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               className="form-control"
               placeholder={profileData.phoneNumber}
               value={formData.phoneNumber}
-              // onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
-              onChange={handlePhoneNumberChange}
+               onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+            
               required
             />
           </div>
