@@ -4,7 +4,7 @@ import React, { createContext, useContext, ReactNode } from 'react';
 // Define API URLs for different environments
 const API_URLS: Record<string, string> = {
   development: 'http://localhost:3000', // For local development
-  production: 'https://latestbackend.vercel.app/', // For production
+  production: 'https://latestbackend.vercel.app', // For production
 };
 
 // Create the context and define the type for the URL
