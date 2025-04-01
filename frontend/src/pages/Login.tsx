@@ -14,7 +14,7 @@ const Login = () => {
 
   const [errors, setErrors] = useState<{ email?: string; password?: string; role?: string }>({});
   const [loading, setLoading] = useState(false);
-  //const apiUrl = useApiUrl(); // Get the API URL from context
+  var apiUrl = useApiUrl(); // Get the API URL from context
 
   const roles = ['Talent', 'Coach', 'Scout'];
 
@@ -46,7 +46,7 @@ const Login = () => {
   const { login } = useAuth();//implementing session store/ realauthcontext
   const handleSubmit = async (e: { preventDefault: () => void }) => {
     e.preventDefault();
-
+    console.log('apiurl: ',apiUrl)
     //check if email contains specific string
     if(formData.email.includes("Admin@triple-s.com")){
       navigate("/admin-landing-page")
@@ -58,7 +58,7 @@ const Login = () => {
 
       const { email, password, role } = formData;
 
-      let apiUrl= useApiUrl(); // Ensure this is correctly formatted
+      ; // Ensure this is correctly formatted
       if (role === "Talent") {
         apiUrl += "/auth/talentLogin";
       } else if (role === "Coach") {

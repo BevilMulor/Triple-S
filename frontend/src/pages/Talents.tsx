@@ -386,16 +386,35 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       });
   }
 };
+  // const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  //   const countryCode = e.target.value;
+  //   setFormData(prev => ({
+  //     ...prev,
+  //     country: countryCode,
+  //     // Reset phone when country changes
+  //     phoneNumber: countryCode ? '' : prev.phoneNumber
+  //   }));
+  // };
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const countryCode = e.target.value;
+    const selectedCountry = getCountryByCode(e.target.value);
+    if (selectedCountry) {
+      setFormData(prev => ({
+        ...prev,
+        country: selectedCountry.code,
+        phoneNumber: selectedCountry.dialCode, // Auto-fill country dial code
+      }));
+    }
+  };
+  
+  
+  const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value.replace(/\D/g, ''); // Remove non-numeric characters
     setFormData(prev => ({
       ...prev,
-      country: countryCode,
-      // Reset phone when country changes
-      phoneNumber: countryCode ? '' : prev.phoneNumber
+      phoneNumber: prev.phoneNumber.startsWith('+') ? prev.phoneNumber.split(' ')[0] + ' ' + inputValue : inputValue,
     }));
   };
-
+  
   // Reset position when discipline changes
   useEffect(() => {
     setFormData(prev => ({
@@ -470,7 +489,8 @@ const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               className="form-control"
               placeholder={profileData.phoneNumber}
               value={formData.phoneNumber}
-              onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+              // onChange={(e) => setFormData(prev => ({ ...prev, phoneNumber: e.target.value }))}
+              onChange={handlePhoneNumberChange}
               required
             />
           </div>
