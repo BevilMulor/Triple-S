@@ -53,7 +53,11 @@ router.get('/getRequirements', async (req, res) => {
         console.log("Fetching all talent requirements...");
 
         // Fetch all talent requirements and populate the scout details
-        const allRequirements = await talentRequirements.find().populate('scout');
+        const allRequirements = await talentRequirements.find().populate({
+            path: 'scout',
+            populate: {
+                path: 'dashboard'}
+        });
 
         res.status(200).json({ talentRequirements: allRequirements });
     } catch (error) {
