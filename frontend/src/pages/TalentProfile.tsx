@@ -309,6 +309,21 @@ const apiUrl = useApiUrl(); // Get the API URL from context
       console.log('media content: ', mediaContent);
       console.log('Media URL:', mediaContent[0].fileUrl);
     }
+
+    let dialcode;
+    if (profileData[0]?.country === 'KE') {
+      dialcode = '+254';
+    } else if (profileData[0]?.country === 'RW') {
+      dialcode = '+250';
+    } else if (profileData[0]?.country === 'UG') {
+      dialcode = '+256';
+    } else if (profileData[0]?.country === 'TZ') {
+      dialcode = '+255';
+    } else if (profileData[0]?.country === 'BU') {
+      dialcode = '+257';
+    } else if (profileData[0]?.country === 'SA') {
+      dialcode = '+27';
+    }
     switch (activeTab) {
       case 'profile':
         return (
@@ -347,7 +362,7 @@ const apiUrl = useApiUrl(); // Get the API URL from context
 
                     {/* Changed from Media Content to Phone Number */}
                     <h6 className="text-muted">Phone Number</h6>
-                    <p className="mb-4">{profileData[0]?.phoneNumber || "Not provided"}</p>
+                    <p className="mb-4">{`${dialcode}${profileData[0]?.phoneNumber}` || "Not provided"}</p>
                   </div>
                   
                   {/* Center the View Media button in the layout */}
