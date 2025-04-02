@@ -261,6 +261,21 @@ const OpenTalentProfile = () => {
   const handleTabClick = (tab: SetStateAction<string>) => {
     setActiveTab(tab);
   };
+
+  let dialcode;
+  if (profileData[0]?.country === 'KE') {
+    dialcode = '+254';
+  } else if (profileData[0]?.country === 'RW') {
+    dialcode = '+250';
+  } else if (profileData[0]?.country === 'UG') {
+    dialcode = '+256';
+  } else if (profileData[0]?.country === 'TZ') {
+    dialcode = '+255';
+  } else if (profileData[0]?.country === 'BU') {
+    dialcode = '+257';
+  } else if (profileData[0]?.country === 'SA') {
+    dialcode = '+27';
+  }
   
   const renderTabContent = () => {
     console.log('profile from OpenTalentProfile: ', profile);
@@ -281,7 +296,7 @@ const OpenTalentProfile = () => {
                     <h6 className="text-muted">Experience</h6>
                     <p className="mb-4">{profile?.experience || "No experience listed"}</p>
                     <h6 className="text-muted">Phone Number</h6>
-                    <p className="mb-4">{profile?.phoneNumber || "Not provided"}</p>
+                    <p className="mb-4">{`${dialcode}${profile?.phoneNumber}` || "Not provided"}</p>
                   </div>
                   <div className="col-sm-12 col-md-6 col-6 d-flex align-items-center justify-content-center">
                     <div className="media-content text-center">
