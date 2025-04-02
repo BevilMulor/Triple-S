@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../auth/realAuthContext';
-import { BsSpeedometer2, BsPeople, BsTrophy, BsBinoculars, BsPerson, BsBell } from 'react-icons/bs';
+import { BsSpeedometer2, BsPeople, BsTrophy, BsBinoculars, BsPerson, BsBell, BsArrowLeft } from 'react-icons/bs';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { useApiUrl } from '../apiurl/ApiContext';
+import { Link } from 'react-router-dom';
 
 // Define types for our data
 interface User {
@@ -179,16 +180,25 @@ const AdminDashboard: React.FC = () => {
   return (
     <div className="container-fluid bg-light p-4 rounded shadow" style={{ maxWidth: '1000px' }}>
       <div className="row">
-        {/* Sidebar - Changed from bg-white to bg-dark */}
-        <div className="col-md-2 bg-dark rounded p-3 me-3">
+        {/* Sidebar - Changed from bg-white to bg-dark with flex column setup */}
+        <div className="col-md-2 bg-dark rounded p-3 me-3 d-flex flex-column" style={{ minHeight: "calc(100vh - 32px)" }}>
           <div className="d-flex align-items-center mb-4">
             <div className="bg-dark text-white p-1 rounded me-2">
               <BsSpeedometer2 />
             </div>
             <span className="fw-bold text-white">Triple S Admin</span>
           </div>
-          <div className="nav flex-column">
-            {/* Sidebar content */}
+          
+          <div className="nav flex-column flex-grow-1">
+            {/* Sidebar content would go here */}
+          </div>
+          
+          {/* Back to Admin Profile link - positioned at bottom */}
+          <div className="mt-auto pt-3">
+            <Link to="/admin-profile" className="d-flex align-items-center text-white text-decoration-none p-2 rounded hover-bg-secondary">
+              <BsArrowLeft className="me-2" />
+              <span>Back to Admin Profile</span>
+            </Link>
           </div>
         </div>
 
