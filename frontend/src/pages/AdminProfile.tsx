@@ -1,8 +1,9 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BsPersonFill, BsShieldLockFill, BsBellFill } from 'react-icons/bs';
 import { useAuth } from '../auth/realAuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useApiUrl } from '../apiurl/ApiContext';
 
 const AdminProfile: React.FC = () => {
   // const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
@@ -15,6 +16,7 @@ const AdminProfile: React.FC = () => {
     navigate('/admin-form', { state: { isEditing: true, userId } }); 
   };
   
+  const apiUrl = useApiUrl(); // Get the API URL from context
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +25,7 @@ useEffect(() => {
   const token = localStorage.getItem('authToken'); // Retrieve the token
   if (!token) return;
 
-  fetch('http://localhost:3000/admin/getAdminUser', {
+  fetch(`${apiUrl}/admin/getAdminUser`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -69,7 +71,7 @@ const handleDeleteProfile= async ()=>{
   }
 
   try {
-    const response = await fetch(`http://localhost:3000/admin/deleteAdminUser`, {
+    const response = await fetch(`${apiUrl}/admin/deleteAdminUser`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
@@ -103,7 +105,7 @@ const handleDeleteProfile= async ()=>{
  }
 
   return (
-    <div className="container-fluid p-0">
+    <div className="d-flex flex-column min-vh-100">
       {/* Header */}
       <nav className="navbar navbar-dark bg-dark px-4">
         <div className="container-fluid">
@@ -145,10 +147,10 @@ const handleDeleteProfile= async ()=>{
         </div>
       </nav>
 
-      <div className="container-fluid my-4">
-        <div className="row">
+      <div className="container my-4 flex-grow-1">
+        <div className="row justify-content-center">
           {/* Sidebar */}
-          <div className="col-md-3">
+          <div className="col-md-4 col-lg-3">
             <div className="card">
               <div className="card-body text-center">
                 <div className="mb-3">
@@ -165,7 +167,7 @@ const handleDeleteProfile= async ()=>{
                 
                 <div className="bg-white rounded shadow-sm p-3 mb-4 text-center">
                   <div className="position-relative d-inline-block">
-                                    <img 
+                    <img 
                     src={userData?.user?.adminDashboard?.[0]?.mediaContent?.[0]?.fileUrl || 'https://via.placeholder.com/150'}
                     className="card-img-top rounded-circle" 
                     alt={userData?.user?.name || 'Admin'}
@@ -193,7 +195,7 @@ const handleDeleteProfile= async ()=>{
           </div>
 
           {/* Main Content */}
-          <div className="col-md-9">
+          <div className="col-md-8 col-lg-7">
             {/* Profile Information */}
             <div className="card mb-4">
               <div className="card-body">
@@ -293,7 +295,7 @@ const handleDeleteProfile= async ()=>{
       </div>
 
       {/* Footer */}
-      <footer className="bg-dark text-white py-3 px-4">
+      <footer className="bg-dark text-white py-3 px-4 mt-auto">
         <div className="container-fluid">
           <div className="d-flex justify-content-between align-items-center">
             <p className="mb-0">© 2025 Admin Profile. All rights reserved.</p>
