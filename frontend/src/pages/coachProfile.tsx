@@ -308,10 +308,10 @@ return (
                   talentReviews.map((review, index) => (
                     <div key={index} className={`pb-3 ${index < talentReviews.length - 1 ? 'border-bottom mb-3' : ''}`}>
                       <div className="mb-1">
-                        <h5 className="mb-0 fw-bold text-primary">{`Name: ${reviewedTalent[0].talent.dashboard[0].name}`}</h5>
-                        <h6 className="mb-0 fw-bold text-primary">{`Ball distribution: ${review.ballDistributionR}`}</h6>
-                        <h6 className="mb-0 fw-bold text-primary">{`Composure: ${review.composureR}`}</h6>
-                        <h6 className="mb-0 fw-bold text-primary">{`Dribbling: ${review.dribblingR}`}</h6>
+                        <h5 className="mb-0 text-dark">{`Name: ${reviewedTalent[0].talent.dashboard[0].name}`}</h5>
+                        <h6 className="mb-0 text-dark">{`Ball distribution: ${review.ballDistributionR}`}</h6>
+                        <h6 className="mb-0 text-dark">{`Composure: ${review.composureR}`}</h6>
+                        <h6 className="mb-0 text-dark">{`Dribbling: ${review.dribblingR}`}</h6>
                         <div>
                           <button className="btn btn-sm text-secondary p-0 me-2">
                             <i className="bi bi-pencil"></i>
@@ -321,7 +321,7 @@ return (
                           </button>
                         </div>
                       </div>
-                      <p className="mb-0 medium fw-bold text-secondary">{review.comment}</p>
+                      <p className="mb-0 medium text-dark">{review.comment}</p>
                     </div>
                   ))
                 ) : (
@@ -351,6 +351,4 @@ return (
   };
 
 
-export default CoachProfile;  
-  
-
+export default CoachProfile;
