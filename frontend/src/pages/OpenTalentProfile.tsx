@@ -6,6 +6,7 @@ import { Button } from 'react-bootstrap';
 import { Video, Pen } from 'lucide-react';
 import { Modal } from 'react-bootstrap';
 import { useApiUrl } from '../apiurl/ApiContext';
+import { useNavigate } from 'react-router-dom';
 
 const positionsByDiscipline = {
   Football: ['Goalkeeper', 'Defense', 'Midfield', 'Striker'],
@@ -43,6 +44,7 @@ const OpenTalentProfile = () => {
   const handleCloseModal = () => setShowMediaModal(false);
   const handleShowModal = () => setShowMediaModal(true);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // Initialize useNavigate hook
  
   const getSkillLabels = () => {
     switch(coachDiscipline) {
@@ -203,6 +205,10 @@ const OpenTalentProfile = () => {
       [name]: value
     });
   };
+
+  const handleToHome=() => {
+    navigate('/');
+  }
   // Handle post requirement form submission
   const handleSubmitScoutRequirements = async () => {
     const position = filters.position;
@@ -263,17 +269,17 @@ const OpenTalentProfile = () => {
   };
 
   let dialcode;
-  if (profileData[0]?.country === 'KE') {
+  if (profile?.country === 'KE') {
     dialcode = '+254';
-  } else if (profileData[0]?.country === 'RW') {
+  } else if (profile?.country === 'RW') {
     dialcode = '+250';
-  } else if (profileData[0]?.country === 'UG') {
+  } else if (profile?.country === 'UG') {
     dialcode = '+256';
-  } else if (profileData[0]?.country === 'TZ') {
+  } else if (profile?.country === 'TZ') {
     dialcode = '+255';
-  } else if (profileData[0]?.country === 'BU') {
+  } else if (profile?.country === 'BU') {
     dialcode = '+257';
-  } else if (profileData[0]?.country === 'SA') {
+  } else if (profile?.country === 'SA') {
     dialcode = '+27';
   }
   
@@ -413,7 +419,7 @@ const OpenTalentProfile = () => {
     <>
       <div className="container-fluid bg-light py-4">
         <div className="row">
-          <div className="col-12 mb-3">
+          {/* <div className="col-12 mb-3">
             <div className="d-flex justify-content-between align-items-center">
               <h4 className="m-0">Talent Profile</h4>
               <div className="d-flex align-items-center">
@@ -426,7 +432,28 @@ const OpenTalentProfile = () => {
                 ></div>
               </div>
             </div>
-          </div>
+          </div> */}
+          <nav className="navbar navbar-expand-lg" style={{ backgroundColor: "#f8f9fa", boxShadow: "0 2px 10px rgba(0, 0, 0, 0.1)" }}>
+              <div className="container">
+                {/* Navbar Brand */}
+                <a className="navbar-brand fw-bold text-dark" href="#">
+                  Talent Profile
+                </a>
+
+                {/* Navbar Buttons */}
+                <div className="d-flex">
+                  <button className="btn btn-outline-dark me-2" onClick={handleToHome}>
+                    Home
+                  </button>
+                  <button className="btn btn-outline-secondary" onClick={() => window.history.back()}>
+                    Back
+                  </button>
+                </div>
+              </div>
+            </nav>
+
+            {/* Add spacing below the navbar */}
+            <div className="mb-4"></div>
   
           <div className="col-md-3 mb-4 mb-md-0">
               <div className="list-group">
@@ -463,7 +490,7 @@ const OpenTalentProfile = () => {
           <div className="col-md-9">{renderTabContent()}</div>
         </div>
   
-        {user.role === 'Coach' && (
+        {/* {user.role === 'Coach' && (
           <div>
             <div className="mb-3">
               <label className="form-label">Overall Rating</label>
@@ -515,9 +542,82 @@ const OpenTalentProfile = () => {
               Submit Rating
             </button>
           </div>
-        )}
+        )} */}
+
+{user.role === 'Coach' && (
+  <div className="card shadow-sm p-4">
+    <h5 className="card-title text-center">Player Rating</h5>
+
+    {/* Overall Star Rating */}
+    <div className="mb-4 text-center">
+      <label className="form-label fw-bold">Overall Rating</label>
+      <div className="d-flex justify-content-center">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            onClick={() => handleStarClick(star)}
+            className="mx-1"
+            style={{
+              cursor: 'pointer',
+              fontSize: '28px',
+              color: star <= ratings.overall ? '#ffc107' : '#e4e5e9',
+            }}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+    </div>
+
+    {/* Skill Ratings */}
+    <div className="row">
+      {skillLabels.map((label, index) => (
+        <div className="col-md-6 mb-3" key={index}>
+          <label className="form-label fw-bold">{label}</label>
+          <input
+            type="range"
+            className="form-range"
+            min="1"
+            max="10"
+            value={ratings[`skill${index + 1}`]}
+            onChange={(e) => handleRatingChange(`skill${index + 1}`, e.target.value)}
+          />
+          <div className="progress mt-2">
+            <div
+              className="progress-bar bg-warning"
+              role="progressbar"
+              style={{ width: `${ratings[`skill${index + 1}`] * 10}%` }}
+            >
+              {ratings[`skill${index + 1}`]}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {/* Comments Section */}
+    <div className="mb-3">
+      <label className="form-label fw-bold">Comments</label>
+      <textarea
+        className="form-control"
+        value={comments}
+        onChange={(e) => setComments(e.target.value)}
+        rows={3}
+        placeholder="Enter your feedback..."
+      />
+    </div>
+
+    {/* Submit Button */}
+    <div className="text-center">
+      <button className="btn btn-primary px-4" onClick={handleSubmitRating}>
+        Submit Rating
+      </button>
+    </div>
+  </div>
+)}
+
   
-        {user.role === 'Scout' && (
+        {/* {user.role === 'Scout' && (
           <div className="mb-4">
             <h2 className="h5 mb-3">Post Talent Requirement</h2>
             <div className="card border-0 shadow-sm">
@@ -554,7 +654,53 @@ const OpenTalentProfile = () => {
               </div>
             </div>
           </div>
-        )}
+        )} */}
+        {user.role === 'Scout' && (
+  <div className="mb-4">
+    <h2 className="h5 text-primary mb-3">Post Talent Requirement</h2>
+    <div className="card bg-white border-0 shadow-sm">
+      <div className="card-body">
+        {/* Position Required */}
+        <div className="mb-3">
+          <label className="form-label text-muted">Position Required</label>
+          <select
+            className="form-select border-light"
+            value={filters.position}
+            onChange={handleFilterChange}
+            name="position"
+          >
+            <option value="All Positions">Select Position</option>
+            {positionsByDiscipline[scoutDiscipline]?.map((position) => (
+              <option key={position} value={position}>
+                {position}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Additional Requirements */}
+        <div className="mb-3">
+          <label className="form-label text-muted">Additional Requirements</label>
+          <textarea
+            className="form-control border-light"
+            rows={4}
+            placeholder="Describe your requirements..."
+            value={requirements}
+            onChange={(e) => setRequirements(e.target.value)}
+          ></textarea>
+        </div>
+
+        {/* Submit Button */}
+        <div className="text-center">
+          <button className="btn btn-outline-primary px-4" onClick={handleSubmitScoutRequirements}>
+            Post Requirement
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
       </div>
     </>
   );
