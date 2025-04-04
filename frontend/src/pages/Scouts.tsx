@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'; 
-import { Bell, MessageCircle } from 'lucide-react';
+import { Bell, MessageCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link as RouterLink } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Navbar } from '../components/common/Navbar';
@@ -64,9 +64,13 @@ const ScoutDashboard = () => {
     ageRange: 'All Ages',
     experienceLevel: 'All Levels'
   });
-   const [discipline, setDiscipline] = useState<Discipline>('Football'); // Default value
+  const [discipline, setDiscipline] = useState<Discipline>('Football'); // Default value
   const [talents, setTalents] = useState<Talent[]>([]);
   const apiUrl = useApiUrl(); // Get the API URL from context 
+
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [talentsPerPage] = useState(6);
 
   // Fetch talents when the component mounts
   useEffect(() => {
@@ -92,7 +96,30 @@ const ScoutDashboard = () => {
   // Mock user data
   const scoutDiscipline = user?.discipline;
   
+  // Get current talents for pagination
+  const indexOfLastTalent = currentPage * talentsPerPage;
+  const indexOfFirstTalent = indexOfLastTalent - talentsPerPage;
+  const currentTalents = talents.slice(indexOfFirstTalent, indexOfLastTalent);
   
+  // Calculate total pages
+  const totalPages = Math.ceil(talents.length / talentsPerPage);
+
+  // Change page
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+  
+  // Go to next page
+  const nextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+  // Go to previous page
+  const prevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   // Handle filter change
   const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -164,9 +191,6 @@ const ScoutDashboard = () => {
       navigate(`/talent-profile/${id}`)
     }
   }
-  // const handleButtonClick=()=>{
-  //   navigate('/actual-talent-profile')
-  // }
 
   const handleProfileClick=()=>{
     console.log("'go to profile' button clicked");
@@ -271,7 +295,7 @@ const ScoutDashboard = () => {
 
         {/* Talents Grid */}
         <div className="row mb-4">
-          {talents.map(talent => (
+          {currentTalents.map(talent => (
             <div className="col-md-4 mb-3" key={talent._id}>
               <div className="card shadow-sm h-100">
                 <div className="position-relative">
@@ -316,9 +340,6 @@ const ScoutDashboard = () => {
                   <button 
                         className="btn btn-primary w-100 me-1"
                         onClick={() => handleButtonClick(talent?.dashboard?.[0]?._id)}
-                        // onClick={handleButtonClick}
-                        
-
                       >
                         View Profile
                       </button>
@@ -331,6 +352,45 @@ const ScoutDashboard = () => {
             </div>
           ))}
         </div>
+
+        {/* Updated Pagination Controls to match CoachDashboard */}
+        {talents.length > 0 && (
+          <div className="d-flex justify-content-center mt-4">
+            <nav aria-label="Talent pagination">
+              <ul className="pagination">
+                <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                  <button 
+                    className="page-link" 
+                    onClick={prevPage}
+                    disabled={currentPage === 1}
+                    aria-label="Previous"
+                  >
+                    Previous
+                  </button>
+                </li>
+                
+                {Array.from({ length: totalPages }, (_, i) => (
+                  <li key={i + 1} className={`page-item ${currentPage === i + 1 ? 'active' : ''}`}>
+                    <button className="page-link" onClick={() => paginate(i + 1)}>
+                      {i + 1}
+                    </button>
+                  </li>
+                ))}
+                
+                <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                  <button 
+                    className="page-link" 
+                    onClick={nextPage}
+                    disabled={currentPage === totalPages}
+                    aria-label="Next"
+                  >
+                    Next
+                  </button>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        )}
 
         {/* Post Requirement Section */}
         <div className="mb-4">

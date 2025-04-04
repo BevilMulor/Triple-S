@@ -67,39 +67,9 @@ const CoachDashboard = () => {
   const [] = useState<ProfileData | null>(null);
   const [] = useState(true);
 
-  //fetch particular talent using params
-   // Fetch profile data - updated to use the id from URL if available
-  // Handle view profile click
-  // const handleViewProfile=()=>{
-  //   let id=talent.dashboard[0]._id;
-  //   // Use the id from URL params if available, otherwise use the default endpoint
-  //   const endpoint = id
-  //     ? `http://localhost:3000/talent/getOProfileById/${id}`
-  //     : 'http://localhost:3000/talent/getProfile';
-
-  //   fetch(endpoint, {
-  //     method: 'GET',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-        
-  //     },
-  //   })
-  //     .then((response) => response.json())
-  //     .then((data: ProfileData) => {
-  //       setProfileData(data);
-  //     })
-  //     .catch((error) => {
-  //       console.error('Error checking user profile:', error);
-  //       setError('Failed to load profile');
-  //     })
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-
-  // }
-   
-    
-   
+  // Pagination states
+  const [currentPage, setCurrentPage] = useState(1);
+  const [talentsPerPage] = useState(6);
 
   // Update coachDiscipline when user data is available
   useEffect(() => {
@@ -153,6 +123,8 @@ const CoachDashboard = () => {
       ...filters,
       [name]: value
     });
+    // Reset to first page when filters change
+    setCurrentPage(1);
   };
 
   const handleProfileClick=()=>{
@@ -234,6 +206,48 @@ const CoachDashboard = () => {
   }
   const skillLabels = getSkillLabels();
   console.log('talents: ',talents);
+
+  // Pagination logic
+  const indexOfLastTalent = currentPage * talentsPerPage;
+  const indexOfFirstTalent = indexOfLastTalent - talentsPerPage;
+  
+  // Apply filters to talents
+  const filteredTalents = talents.filter(talent => {
+    // Filter by position
+    if (filters.position !== 'All Positions' && 
+        talent.dashboard[0]?.position !== filters.position) {
+      return false;
+    }
+    
+    // Filter by age range (if needed)
+    if (filters.ageRange !== 'All Ages') {
+      const age = talent.dashboard[0]?.dateOfBirth 
+        ? new Date().getFullYear() - new Date(talent.dashboard[0].dateOfBirth).getFullYear() 
+        : null;
+      
+      if (age === null) return false;
+      
+      const [minAge, maxAge] = filters.ageRange.split('-').map(Number);
+      if (age < minAge || age > maxAge) return false;
+    }
+    
+    // Filter by experience level
+    if (filters.experienceLevel !== 'All Levels' && 
+        talent.dashboard[0]?.experience !== filters.experienceLevel) {
+      return false;
+    }
+    
+    return true;
+  });
+  
+  // Get current talents
+  const currentTalents = filteredTalents.slice(indexOfFirstTalent, indexOfLastTalent);
+  
+  // Calculate total pages
+  const totalPages = Math.ceil(filteredTalents.length / talentsPerPage);
+
+  // Handle page change
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   return (
     <>
@@ -343,7 +357,7 @@ const CoachDashboard = () => {
       <div className="row mb-4">
         <div className="col-12 col-md-10 mx-auto"> {/* Centered container */}
           <div className="row">
-            {talents.map(talent => (
+            {currentTalents.map(talent => (
               <div className="col-md-4 mb-3" key={talent._id}>
                 <div className="card shadow-sm h-100">
                   <div className="position-relative">
@@ -385,14 +399,9 @@ const CoachDashboard = () => {
                       </div>
                     </div>
                     <div className="d-flex justify-content-between">
-                      
-                      
-
                       <button 
                         className="btn btn-primary w-100 me-1"
                         onClick={() => handleButtonClick(talent?.dashboard?.[0]?._id)}
-                        
-
                       >
                         View Profile
                       </button>
@@ -406,6 +415,49 @@ const CoachDashboard = () => {
               </div>
             ))}
           </div>
+          
+          {/* Pagination Controls */}
+          {totalPages > 1 && (
+            <div className="d-flex justify-content-center mt-4">
+              <nav aria-label="Talent pagination">
+                <ul className="pagination">
+                  <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+                    <button 
+                      className="page-link" 
+                      onClick={() => paginate(currentPage - 1)}
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </button>
+                  </li>
+                  
+                  {[...Array(totalPages)].map((_, index) => (
+                    <li 
+                      className={`page-item ${currentPage === index + 1 ? 'active' : ''}`} 
+                      key={index}
+                    >
+                      <button 
+                        className="page-link" 
+                        onClick={() => paginate(index + 1)}
+                      >
+                        {index + 1}
+                      </button>
+                    </li>
+                  ))}
+                  
+                  <li className={`page-item ${currentPage === totalPages ? 'disabled' : ''}`}>
+                    <button 
+                      className="page-link" 
+                      onClick={() => paginate(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </button>
+                  </li>
+                </ul>
+              </nav>
+            </div>
+          )}
         </div>
       </div>
 
