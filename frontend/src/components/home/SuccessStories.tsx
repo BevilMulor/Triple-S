@@ -2,8 +2,8 @@ import React from 'react';
 
 const SuccessStories: React.FC = () => {
   return (
-    <section className="success-stories py-5 bg-light">
-      <div className="container">
+    <section className="success-stories bg-light" style={{ minHeight: "500px", display: "flex", alignItems: "center" }}>
+      <div className="container py-5">
         <h2 className="text-center mb-5">Success Stories</h2>
         <div className="row g-4">
           <div className="col-md-6">
